@@ -37,8 +37,9 @@ function createServer() {
   // const io = new socketio.Server(server);
 
   // todo - different dev and prod settings
-  httpServer.listen(8080, () => {
-    console.log('server listening..'); // todo - change console.log to logger
+  const port = 8080;
+  httpServer.listen(port, () => {
+    console.log(`server listening on port ${port}`); // todo - change console.log to logger
   });
 }
 
