@@ -7,7 +7,7 @@ import { hash } from '@/utils/password';
 // read: https://github.com/microsoft/TypeScript/issues/26781
 
 // eslint-disable-next-line import/prefer-default-export
-export async function get(id: ObjectID)
+export async function get(id: ObjectID | string)
 : Promise<ServiceResult<CompanyModelType>> {
   const companyObj = await CompanyModel.findById(id);
   if (!companyObj) {
@@ -22,7 +22,11 @@ export async function get(id: ObjectID)
   };
 }
 
-export async function update(id: ObjectID, change: Partial<CompanySignup>, isAdmin = false):
+export async function update(
+  id: ObjectID | string,
+  change: Partial<CompanySignup>,
+  isAdmin = false,
+):
 Promise<ServiceResult<CompanyModelType>> {
   const companyObj = await CompanyModel.findById(id);
   // important! todo: set fields that only admin can change
@@ -69,7 +73,7 @@ Promise<ServiceResult<CompanyModelType>> {
   };
 }
 
-export async function deleteObj(id: ObjectID):
+export async function deleteObj(id: ObjectID | string):
 Promise<ServiceResult<CompanyModelType>> {
   const companyObj = await CompanyModel.findById(id);
   if (!companyObj) {
