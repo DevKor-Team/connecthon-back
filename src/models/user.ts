@@ -1,39 +1,22 @@
-import {
-  UserSignup, UserProfile, UserIdentity, UserProvider,
-} from '@/interfaces/user';
+import { User, UserProvider } from '@/interfaces/auth';
 import { ObjectID } from 'bson';
 import mongo from 'mongoose';
+import profileSchema from '@/models/profile';
 
-const profileSchema = new mongo.Schema<UserProfile>({
-  img: { required: false, type: String },
-  link: {
-    github: { required: false, type: String },
-    blog: { required: false, type: String },
-  },
-  career: { required: false, type: String },
-});
-
-const schema = new mongo.Schema<UserSignup>({
-  id: { required: true, type: String },
-  password: { required: true, type: String },
-  identity: {
-    type: String,
-    enum: UserIdentity,
-    default: UserIdentity.Participant,
-  },
-  isAdmin: { required: true, type: Boolean, default: false },
-  provider: {
-    type: String,
-    enum: UserProvider,
-  },
+const schema = new mongo.Schema<User>({
   email: { required: true, type: String },
   name: {
     first: { required: true, type: String },
     last: { required: true, type: String },
   },
   team: { required: false, type: ObjectID }, // ref: 'Team'
+  isAdmin: { required: true, type: Boolean, default: false },
   profile: profileSchema,
+  provider: {
+    type: String,
+    enum: UserProvider,
+  },
 });
 
-const UserModel = mongo.model<UserSignup>('User', schema);
+const UserModel = mongo.model<User>('User', schema);
 export default UserModel;
