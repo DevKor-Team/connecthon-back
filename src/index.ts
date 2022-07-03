@@ -2,15 +2,19 @@ import express from 'express';
 import helmet from 'helmet';
 import http from 'http';
 import cookieParser from 'cookie-parser';
+import mongoose from 'mongoose';
+import 'dotenv/config';
 import router from '@/routes';
-import mongoose, { ConnectOptions } from 'mongoose';
 
 // setup
 async function initialize() {
   // connect mongodb
-  const mongoHost = 'mongodb+srv://testboy:5OFo50EvkA9Mn43X@cluster0.haecp.mongodb.net/?retryWrites=true&w=majority';
-
-  await mongoose.connect(mongoHost);
+  const mongoHost = process.env.MONGO_HOST;
+  if (mongoHost) {
+    await mongoose.connect(mongoHost);
+  } else {
+    console.error('mongo host not exists');
+  }
   /*
   useNewUrlParser, useUnifiedTopology, useFindAndModify, and useCreateIndex
   are no longer supported options. Mongoose 6 always behaves as if
