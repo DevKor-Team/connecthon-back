@@ -3,6 +3,7 @@ import helmet from 'helmet';
 import http from 'http';
 import cookieParser from 'cookie-parser';
 import router from '@/routes';
+import passport from 'passport';
 
 // setup
 // async function initialize() {
@@ -22,6 +23,10 @@ function expressLoader() {
 
   app.use(router);
   // app.use(errorHandler); // todo - error handler
+
+  // passport
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   app.all('*', (_, res) => {
     res.status(404).json({ success: false });
