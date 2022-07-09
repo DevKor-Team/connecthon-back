@@ -6,7 +6,6 @@ import { hash } from '@/utils/password';
 
 // read: https://github.com/microsoft/TypeScript/issues/26781
 
-// eslint-disable-next-line import/prefer-default-export
 export async function get(id: ObjectID | string)
 : Promise<ServiceResult<CompanyModelType>> {
   const companyObj = await CompanyModel.findById(id);

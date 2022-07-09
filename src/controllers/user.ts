@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import * as UserService from '@/services/auth/user';
 import { Profile } from '@/interfaces/auth';
 
-// eslint-disable-next-line import/prefer-default-export
 export async function get(req: Request<{ id: string }>, res: Response, next: NextFunction) {
   try {
     const result = await UserService.get(req.params.id);

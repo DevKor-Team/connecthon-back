@@ -12,7 +12,7 @@ export interface Profile {
 export enum UserProvider {
   Google = 'GOOGLE',
   Github = 'GITHUB',
-  Devkor = 'DEVKOR',
+  Kakao = 'KAKAO',
 }
 
 export interface User {

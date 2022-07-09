@@ -13,6 +13,7 @@ const schema = new mongo.Schema<User>({
   isAdmin: { required: true, type: Boolean, default: false },
   profile: profileSchema,
   provider: {
+    required: true,
     type: String,
     enum: UserProvider,
   },
