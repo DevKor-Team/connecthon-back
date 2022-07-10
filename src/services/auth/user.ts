@@ -8,7 +8,6 @@ import { ServiceResult } from '@/interfaces/common';
 
 // read: https://github.com/microsoft/TypeScript/issues/26781
 
-// eslint-disable-next-line import/prefer-default-export
 export async function get(id: ObjectID | string)
 : Promise<ServiceResult<UserModelType>> {
   const userObj = await UserModel.findById(id);
@@ -25,6 +24,23 @@ export async function get(id: ObjectID | string)
       provider: userObj.provider,
       isAdmin: userObj.isAdmin,
     },
+  };
+}
+
+export async function getList()
+: Promise<ServiceResult<UserModelType[]>> {
+  const userObjs = await UserModel.find();
+  const userList = userObjs.map((userObj) => ({
+    id: userObj._id,
+    email: userObj.email,
+    name: userObj.name,
+    team: userObj.team,
+    profile: userObj.profile,
+    provider: userObj.provider,
+    isAdmin: userObj.isAdmin,
+  }));
+  return {
+    data: userList,
   };
 }
 
