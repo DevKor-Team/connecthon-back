@@ -11,6 +11,15 @@ export async function get(req: Request<{ id: string }>, res: Response, next: Nex
   }
 }
 
+export async function getList(req: Request, res: Response, next: NextFunction) {
+  try {
+    const result = await UserService.getList();
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function updateProfile(
   req: Request<{ id: string }, Record<string, never>, { profile: Profile }>,
   res: Response,

@@ -52,6 +52,11 @@ describe('user service', () => {
     expect(res?.data).toMatchObject(mockUser);
   });
 
+  it('participant get list', async () => {
+    const res = await userService.getList();
+    expect(res?.data).toBeInstanceOf(Array);
+  });
+
   it('participant update', async () => {
     const updateField = {
       profile: {
