@@ -3,8 +3,16 @@ import helmet from 'helmet';
 import http from 'http';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import router from '@/routes';
+
+if (process.env.NODE_ENV === 'development') {
+  dotenv.config({
+    path: '.env',
+  });
+} else if (process.env.NODE_ENV === 'prouction') {
+  console.log('on production mode, set environment variables via other way');
+}
 
 // setup
 async function initialize() {
@@ -54,7 +62,8 @@ async function createServer() {
   // const io = new socketio.Server(server);
 
   // todo - different dev and prod settings
-  const port = 8080;
+  const port = process.env.PORT || 8080;
+
   httpServer.listen(port, () => {
     console.log(`server listening on port ${port}`); // todo - change console.log to logger
   });
