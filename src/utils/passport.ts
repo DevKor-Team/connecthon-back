@@ -99,9 +99,9 @@ type githubOauthResponse = {
 }
 
 export const githubStrategy = new GithubStrategy({
-  clientID: '89fd2e7166f4fe1073be',
+  clientID: process.env.GITHUB_CLIENT_ID!,
+  clientSecret: process.env.GITHUB_CLIENT_SECRET!,
   callbackURL: '/auth/github/redirect',
-  clientSecret: '44b4c15b01633df6719e1158d37e1b46595e38fc',
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     const profileJson = profile._json as githubOauthResponse;
