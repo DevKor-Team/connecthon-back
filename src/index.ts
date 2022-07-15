@@ -65,13 +65,6 @@ async function expressLoader() {
   passport.use(Passport.googleStrategy);
   passport.serializeUser(Passport.serialize);
   passport.deserializeUser(Passport.deserialize);
-  app.use((req, res, next) => {
-    if (!req.session.passport || JSON.stringify(req.session.passport) === '{}') {
-      req.user = undefined;
-    }
-    res.setHeader('Set-Cookie', 'key=value; HttpOnly; SameSite=strict');
-    next();
-  });
 
   app.all('*', (_, res) => {
     res.status(404).json({ error: { message: 'URL Not Found' } });

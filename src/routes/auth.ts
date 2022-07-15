@@ -13,7 +13,7 @@ router.get('/kakao', AuthController.kakaoLogin);
 router.get('/github', AuthController.githubLogin);
 
 router.get('/kakao/redirect', passport.authenticate('kakao', {
-  successRedirect: '/', failureRedirect: '/login', scope: ['profile', 'email'],
+  successRedirect: '/', failureRedirect: '/login', scope: ['profile_nickname', 'account_email'],
 }));
 
 router.get('/google/redirect', passport.authenticate('google', {
