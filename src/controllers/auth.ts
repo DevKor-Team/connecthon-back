@@ -51,7 +51,7 @@ export const kakaoLogin = [
     }
   },
   passport.authenticate('kakao', {
-    successRedirect: '/', failureRedirect: '/login', scope: ['profile', 'email'],
+    successRedirect: '/', failureRedirect: '/login', scope: ['profile_nickname', 'account_email'],
   }),
   (req: Request, res: Response) => {
     res.json({ success: true });
