@@ -1,7 +1,7 @@
 import { ObjectID } from 'bson';
 // import lodash from 'lodash';
 import UserModel from '@/models/user';
-import { UserModel as UserModelType, User as UserType } from '@/interfaces/auth';
+import { UserModel as UserModelType, User as UserType, UserProvider } from '@/interfaces/auth';
 import { ServiceResult } from '@/interfaces/common';
 
 // const USER_CHANGABLE_FIELDS = ['team', 'profile'];
@@ -9,7 +9,7 @@ import { ServiceResult } from '@/interfaces/common';
 // read: https://github.com/microsoft/TypeScript/issues/26781
 
 export async function get(id: ObjectID | string)
-: Promise<ServiceResult<UserModelType>> {
+  : Promise<ServiceResult<UserModelType>> {
   const userObj = await UserModel.findById(id);
   if (!userObj) {
     throw Error('User Not Found');
@@ -27,8 +27,25 @@ export async function get(id: ObjectID | string)
   };
 }
 
+export async function getByEmail(email: string, provider: UserProvider)
+  : Promise<ServiceResult<UserModelType>> {
+  const user = await UserModel.findOne({ email, provider: provider });
+  if (!user) throw Error('User Not Found');
+  return {
+    data: {
+      id: user._id,
+      email: user.email,
+      name: user.name,
+      team: user.team,
+      profile: user.profile,
+      provider: user.provider,
+      isAdmin: user.isAdmin,
+    }
+  }
+}
+
 export async function getList()
-: Promise<ServiceResult<UserModelType[]>> {
+  : Promise<ServiceResult<UserModelType[]>> {
   const userObjs = await UserModel.find();
   const userList = userObjs.map((userObj) => ({
     id: userObj._id,
@@ -45,7 +62,7 @@ export async function getList()
 }
 
 export async function update(id: ObjectID | string, change: Partial<UserType>, isAdmin = false):
-Promise<ServiceResult<UserModelType>> {
+  Promise<ServiceResult<UserModelType>> {
   const userObj = await UserModel.findById(id);
   let updates: Partial<UserType> = {};
   // todo - satisfying types... lodash.pick occurs type error
@@ -79,7 +96,7 @@ Promise<ServiceResult<UserModelType>> {
 }
 
 export async function create(user: UserType):
-Promise<ServiceResult<UserModelType>> {
+  Promise<ServiceResult<UserModelType>> {
   const existingUser = await UserModel.findOne({
     $or: [{
       email: user.email,
@@ -109,7 +126,7 @@ Promise<ServiceResult<UserModelType>> {
 }
 
 export async function deleteObj(id: ObjectID | string):
-Promise<ServiceResult<UserModelType>> {
+  Promise<ServiceResult<UserModelType>> {
   const userObj = await UserModel.findById(id);
   if (!userObj) {
     throw Error('User Not Found');
