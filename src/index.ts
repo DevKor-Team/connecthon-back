@@ -5,6 +5,9 @@ import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import router from '@/routes';
+import session from 'express-session';
+import passport from 'passport';
+import * as Passport from './utils/passport';
 
 if (process.env.NODE_ENV === 'development') {
   dotenv.config({
@@ -47,6 +50,21 @@ async function expressLoader() {
 
   app.use(router);
   // app.use(errorHandler); // todo - error handler
+
+  app.use(session({
+    secret: process.env.SESSION_SECRET_KEY!,
+    resave: true,
+    saveUninitialized: true,
+  }));
+
+  app.use(passport.initialize());
+  app.use(passport.session());
+  passport.use(Passport.localStrategy);
+  passport.use(Passport.githubStrategy);
+  passport.use(Passport.kakaoStrategy);
+  passport.use(Passport.googleStrategy);
+  passport.serializeUser(Passport.serialize);
+  passport.deserializeUser(Passport.deserialize);
 
   app.all('*', (_, res) => {
     res.status(404).json({ error: { message: 'URL Not Found' } });
