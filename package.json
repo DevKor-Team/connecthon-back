@@ -14,7 +14,6 @@
   "author": "froggagul <froggagul@korea.ac.kr>",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.27.2",
     "argon2": "^0.28.5",
     "bson": "^4.6.4",
     "cookie-parser": "^1.4.6",
@@ -33,7 +32,6 @@
     "mongoose": "^6.4.0"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.0",
     "@types/express-session": "^1.17.4",
     "@shelf/jest-mongodb": "^3.0.2",
     "@types/cookie-parser": "^1.4.3",
