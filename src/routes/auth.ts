@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import express from 'express';
 import passport from 'passport';
-import * as AuthController from '../controllers/auth';
+import * as AuthController from '@/controllers/auth';
+import * as CONSTS from '@/utils/consts';
 
 const router = express.Router();
 
@@ -13,15 +14,15 @@ router.get('/kakao', AuthController.kakaoLogin);
 router.get('/github', AuthController.githubLogin);
 
 router.get('/kakao/redirect', passport.authenticate('kakao', {
-  successRedirect: '/', failureRedirect: '/login', scope: ['profile_nickname', 'account_email'],
+  successRedirect: CONSTS.LOGIN_SUCCESS_REDIRECT, failureRedirect: CONSTS.LOGIN_FAILURE_REDIRECT, scope: ['profile_nickname', 'account_email'],
 }));
 
 router.get('/google/redirect', passport.authenticate('google', {
-  successRedirect: '/', failureRedirect: '/login', scope: ['profile', 'email'],
+  successRedirect: CONSTS.LOGIN_SUCCESS_REDIRECT, failureRedirect: CONSTS.LOGIN_FAILURE_REDIRECT, scope: ['profile', 'email'],
 }));
 
 router.get('/github/redirect', passport.authenticate('github', {
-  successRedirect: '/', failureRedirect: '/login', scope: ['profile', 'email'],
+  successRedirect: CONSTS.LOGIN_SUCCESS_REDIRECT, failureRedirect: CONSTS.LOGIN_FAILURE_REDIRECT, scope: ['profile', 'email'],
 }));
 
 export default router;

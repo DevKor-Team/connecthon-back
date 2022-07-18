@@ -52,7 +52,7 @@ async function expressLoader() {
   // app.use(errorHandler); // todo - error handler
 
   app.use(session({
-    secret: 'keyboard cat', // 임시 secret key
+    secret: process.env.SESSION_SECRET_KEY!,
     resave: true,
     saveUninitialized: true,
   }));

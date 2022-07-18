@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
+import * as CONSTS from '@/utils/consts';
 
 export const signup = async (req: Request, res: Response) => {
   try {
@@ -23,7 +24,7 @@ export const localLogin = [
       next();
     }
   },
-  passport.authenticate('local', { failureRedirect: '/login' }),
+  passport.authenticate('local', { failureRedirect: CONSTS.LOGIN_FAILURE_REDIRECT }),
 ];
 
 export const googleLogin = [
@@ -35,7 +36,7 @@ export const googleLogin = [
     }
   },
   passport.authenticate('google', {
-    successRedirect: '/', failureRedirect: '/login', scope: ['profile', 'email'],
+    successRedirect: CONSTS.LOGIN_SUCCESS_REDIRECT, failureRedirect: CONSTS.LOGIN_FAILURE_REDIRECT, scope: ['profile', 'email'],
   }),
   (req: Request, res: Response) => {
     res.json({ success: true });
@@ -51,7 +52,7 @@ export const kakaoLogin = [
     }
   },
   passport.authenticate('kakao', {
-    successRedirect: '/', failureRedirect: '/login', scope: ['profile_nickname', 'account_email'],
+    successRedirect: CONSTS.LOGIN_SUCCESS_REDIRECT, failureRedirect: CONSTS.LOGIN_FAILURE_REDIRECT, scope: ['profile_nickname', 'account_email'],
   }),
   (req: Request, res: Response) => {
     res.json({ success: true });
@@ -67,7 +68,7 @@ export const githubLogin = [
     }
   },
   passport.authenticate('github', {
-    successRedirect: '/', failureRedirect: '/login', scope: ['profile', 'email'],
+    successRedirect: CONSTS.LOGIN_SUCCESS_REDIRECT, failureRedirect: CONSTS.LOGIN_FAILURE_REDIRECT, scope: ['profile', 'email'],
   }),
   (req: Request, res: Response) => {
     res.json({ success: true });
