@@ -79,13 +79,11 @@ describe('user service', () => {
   it('show user team when get', async () => {
     const userId = teamUserIds[0];
     const res = await userService.get(userId);
-    console.log(res?.data);
     expect(res?.data?.team?.toString()).toBe(teamId.toString());
   });
   it('add user to another team when user is member of original team', async () => {
     const userId = teamUserIds[0];
     const res = await userService.get(userId);
-    console.log(res?.data);
     expect(res?.data?.team?.toString()).toBe(teamId.toString());
 
     await teamService.addUser(teamIdOrigin, userId);

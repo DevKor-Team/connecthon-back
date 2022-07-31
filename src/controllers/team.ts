@@ -59,14 +59,17 @@ export async function update(
 }
 
 export async function addUser(
-  req: Request<{ id: string }, Record<string, never>, { data: { userId: string } }>,
+  req: Request<{ id: string }>,
   res: Response,
   next: NextFunction,
 ) {
   try {
-    // todo - is user admin
-    const result = await TeamService.addUser(req.params.id, req.body.data.userId);
-    res.json(result);
+    if (req.isAuthenticated()) {
+      const result = await TeamService.addUser(req.params.id, req.user.id); // todo - user id type
+      res.json(result);
+    } else {
+      throw new Error('Unauthenticated User');
+    }
   } catch (err) {
     next(err);
   }

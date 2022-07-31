@@ -1,16 +1,19 @@
 import express from 'express';
 import * as Controller from '@/controllers/team';
+import {
+  isInTeam,
+  isAdmin,
+  checkAdmin,
+  isParticipant,
+} from '@/middlewares/auth';
 
 const router = express.Router();
 
 router.get('/', Controller.getList);
-router.post('/', Controller.create);
+router.post('/', isAdmin, Controller.create);
 router.get('/:id', Controller.get);
-router.put('/:id', Controller.update);
-router.put('/:id/users', Controller.addUser);
-router.put('/:id', Controller.deleteTeam);
-
-// router.put('/:id/profile', Controller.updateProfile);
-// router.put('/:id/team', Controller.updateTeam);
+router.put('/:id/users', isParticipant, Controller.addUser);
+router.put('/:id', checkAdmin, isInTeam, Controller.update);
+router.put('/:id', isAdmin, Controller.deleteTeam);
 
 export default router;
