@@ -19,7 +19,7 @@ export async function get(id: ObjectID | string)
       id: userObj._id,
       email: userObj.email,
       name: userObj.name,
-      // team: userObj.team,
+      team: userObj.team,
       profile: userObj.profile,
       provider: userObj.provider,
       isAdmin: userObj.isAdmin,
@@ -36,7 +36,7 @@ export async function getByEmail(email: string, provider: UserProvider)
       id: user._id,
       email: user.email,
       name: user.name,
-      // team: user.team,
+      team: user.team,
       profile: user.profile,
       provider: user.provider,
       isAdmin: user.isAdmin,
@@ -51,7 +51,7 @@ export async function getList()
     id: userObj._id,
     email: userObj.email,
     name: userObj.name,
-    // team: userObj.team,
+    team: userObj.team,
     profile: userObj.profile,
     provider: userObj.provider,
     isAdmin: userObj.isAdmin,
@@ -67,9 +67,6 @@ export async function update(id: ObjectID | string, change: Partial<UserType>, i
   let updates: Partial<UserType> = {};
   // todo - satisfying types... lodash.pick occurs type error
   if (!isAdmin) {
-    // if ('team' in change) {
-    //   updates.team = change.team;
-    // }
     if ('profile' in change) {
       updates.profile = change.profile;
     }
@@ -87,7 +84,7 @@ export async function update(id: ObjectID | string, change: Partial<UserType>, i
       id: newUserObj._id,
       email: newUserObj.email,
       name: newUserObj.name,
-      // team: newUserObj.team,
+      team: newUserObj.team,
       profile: newUserObj.profile,
       provider: newUserObj.provider,
       isAdmin: newUserObj.isAdmin,
@@ -117,7 +114,7 @@ export async function create(user: UserType):
       id: userObj._id,
       email: userObj.email,
       name: userObj.name,
-      // team: userObj.team,
+      team: userObj.team,
       profile: userObj.profile,
       provider: userObj.provider,
       isAdmin: userObj.isAdmin,
@@ -137,7 +134,7 @@ export async function deleteObj(id: ObjectID | string):
       id: userObj._id,
       email: userObj.email,
       name: userObj.name,
-      // team: userObj.team,
+      team: userObj.team,
       profile: userObj.profile,
       provider: userObj.provider,
       isAdmin: userObj.isAdmin,

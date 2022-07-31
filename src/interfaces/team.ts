@@ -6,3 +6,7 @@ export interface Team {
   description: string;
   image: string;
 }
+
+export interface TeamModel extends Team {
+  id: ObjectID;
+}

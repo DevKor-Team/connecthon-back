@@ -16,6 +16,7 @@ const schema = new mongo.Schema<User>({
     type: String,
     enum: UserProvider,
   },
+  team: { required: false, type: ObjectID, ref: 'Team' },
 });
 
 const UserModel = mongo.model<User>('User', schema);
