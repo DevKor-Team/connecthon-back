@@ -9,7 +9,6 @@ const schema = new mongo.Schema<User>({
     first: { required: true, type: String },
     last: { required: true, type: String },
   },
-  team: { required: false, type: ObjectID }, // ref: 'Team'
   isAdmin: { required: true, type: Boolean, default: false },
   profile: profileSchema,
   provider: {

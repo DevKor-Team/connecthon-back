@@ -21,7 +21,7 @@ export interface User {
     first: string;
     last: string;
   };
-  team?: ObjectID;
+  // team?: ObjectID;
   profile?: Profile;
   isAdmin: boolean;
   provider: UserProvider;
