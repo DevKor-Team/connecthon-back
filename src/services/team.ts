@@ -61,7 +61,7 @@ export async function create(team: TeamType):
   };
 }
 
-export async function addUser(id: ObjectID | string, userId: ObjectID):
+export async function addUser(id: ObjectID | string, userId: ObjectID | string):
   Promise<ServiceResult<TeamModelType>> {
   const teamObj = await TeamModel.findById(id);
   if (teamObj == null) {
@@ -72,7 +72,6 @@ export async function addUser(id: ObjectID | string, userId: ObjectID):
     throw Error('User does not exists');
   }
   if (!(userObj.team == null)) { // check null or undefined
-    console.log(`${userObj.team.toString()} found`);
     await TeamModel.findByIdAndUpdate(userObj.team, {
       $pull: {
         users: { _id: userId },
@@ -82,7 +81,7 @@ export async function addUser(id: ObjectID | string, userId: ObjectID):
   userObj.team = new ObjectID(id);
   await userObj.save();
 
-  teamObj.users.push(userId);
+  teamObj.users.push(new ObjectID(userId));
   const newTeamObj = await teamObj.save();
 
   return {
