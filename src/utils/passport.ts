@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable no-underscore-dangle */
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
@@ -8,7 +9,10 @@ import dotenv from 'dotenv';
 
 import * as AuthService from '@/services/auth/auth';
 import * as UserService from '@/services/auth/user';
-import { User, UserProvider } from '@/interfaces/auth';
+import {
+  CompanyModel as CompanyModelType, GeneralUser, User,
+  UserModel as UserModelType, UserProvider, isCompany,
+} from '@/interfaces/auth';
 import UserModel from '@/models/user';
 import CompanyModel from '@/models/company';
 
@@ -130,21 +134,25 @@ export const githubStrategy = new GithubStrategy({
   }
 });
 
-export const serialize = (user: any, done: any) => {
-  done(null, user);
+export const serialize = (user: UserModelType | CompanyModelType, done: any) => {
+  if (isCompany(user)) {
+    done(null, { type: 'company', userData: user });
+  } else {
+    done(null, { type: 'user', userData: user });
+  }
 };
 
-export const deserialize = (user: any, done: any) => {
-  if (user instanceof UserModel) {
-    UserService.getByEmail(user.email, user.provider)
-      .then((result) => {
-        if (result.data) { done(null, result.data); } else done(null);
-      })
-      .catch((err) => { console.log(err); });
-  } else if (user instanceof CompanyModel) {
-    CompanyModel.findOne({ username: user.username })
+export const deserialize = (user: GeneralUser, done: any) => {
+  if (isCompany(user.userData)) {
+    CompanyModel.findOne({ username: user.userData.name })
       .then((result) => {
         if (result) { done(null, result); } else done(null);
+      })
+      .catch((err) => { console.log(err); });
+  } else {
+    UserService.getByEmail(user.userData.email, user.userData.provider)
+      .then((result) => {
+        if (result.data) { done(null, result.data); } else done(null);
       })
       .catch((err) => { console.log(err); });
   }

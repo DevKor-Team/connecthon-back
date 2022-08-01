@@ -40,8 +40,8 @@ export async function getByEmail(email: string, provider: UserProvider)
       profile: user.profile,
       provider: user.provider,
       isAdmin: user.isAdmin,
-    }
-  }
+    },
+  };
 }
 
 export async function getList()
