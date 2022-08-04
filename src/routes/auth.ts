@@ -3,13 +3,13 @@ import express from 'express';
 import passport from 'passport';
 import * as AuthController from '@/controllers/auth';
 import * as CONSTS from '@/utils/consts';
+import { isAuth } from '@/utils/auth';
 
 const router = express.Router();
 
-router.get('/logout', AuthController.logout);
-router.get('/user', AuthController.getSessionUser);
+router.get('/logout', isAuth, AuthController.logout);
+router.get('/user', isAuth, AuthController.getSessionUser);
 
-/*
 router.get('/login', (req, res, next) => {
   res.send(`<h1>Sign in</h1>
 <form action="http://localhost:8080/auth/local" method="post">
@@ -24,7 +24,6 @@ router.get('/login', (req, res, next) => {
     <button type="submit">Sign in</button>
 </form>`);
 });
-*/
 
 router.post('/local', AuthController.localLogin);
 router.get('/google', AuthController.googleLogin);

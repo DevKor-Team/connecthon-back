@@ -2,6 +2,7 @@
 import { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 import * as CONSTS from '@/utils/consts';
+import { isCompany, UserModel } from '@/interfaces/auth';
 
 export const logout = async (req: Request, res: Response) => {
   try {
@@ -70,9 +71,13 @@ export const githubLogin = [
 ];
 
 export const getSessionUser = (req: Request, res: Response) => {
-  if (req.isAuthenticated() && req.user) {
-    res.send(req.user);
+  if (isCompany(req.user as UserModel)) {
+    res.send(
+      { type: 'company', ...req.user },
+    );
   } else {
-    res.status(401).json({ success: false });
+    res.send(
+      { type: 'user', ...req.user },
+    );
   }
 };
