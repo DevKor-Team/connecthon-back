@@ -7,7 +7,7 @@ import { hash } from '@/utils/password';
 // read: https://github.com/microsoft/TypeScript/issues/26781
 
 export async function get(id: ObjectID | string)
-: Promise<ServiceResult<CompanyModelType>> {
+  : Promise<ServiceResult<CompanyModelType>> {
   const companyObj = await CompanyModel.findById(id);
   if (!companyObj) {
     throw Error('Company Not Found');
@@ -26,7 +26,7 @@ export async function update(
   change: Partial<CompanySignup>,
   isAdmin = false,
 ):
-Promise<ServiceResult<CompanyModelType>> {
+  Promise<ServiceResult<CompanyModelType>> {
   const companyObj = await CompanyModel.findById(id);
   // important! todo: set fields that only admin can change
   if (!companyObj) {
@@ -44,7 +44,7 @@ Promise<ServiceResult<CompanyModelType>> {
 }
 
 export async function create(company: CompanySignup):
-Promise<ServiceResult<CompanyModelType>> {
+  Promise<ServiceResult<CompanyModelType>> {
   const existingCompany = await CompanyModel.findOne({
     $or: [{
       username: company.username,
@@ -73,12 +73,28 @@ Promise<ServiceResult<CompanyModelType>> {
 }
 
 export async function deleteObj(id: ObjectID | string):
-Promise<ServiceResult<CompanyModelType>> {
+  Promise<ServiceResult<CompanyModelType>> {
   const companyObj = await CompanyModel.findById(id);
   if (!companyObj) {
     throw Error('Company Not Found');
   }
   await companyObj.remove();
+  return {
+    data: {
+      id: companyObj._id,
+      name: companyObj.name,
+      profile: companyObj.profile,
+    },
+  };
+}
+
+export async function getByName(name: string):
+  Promise<ServiceResult<CompanyModelType>> {
+  const companyObj = await CompanyModel.findOne({ name });
+
+  if (!companyObj) {
+    throw Error('Company Not Found');
+  }
   return {
     data: {
       id: companyObj._id,
