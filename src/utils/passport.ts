@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable no-underscore-dangle */
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
@@ -6,11 +9,12 @@ import { Strategy as GithubStrategy } from 'passport-github';
 import { Strategy as LocalStrategy } from 'passport-local';
 import dotenv from 'dotenv';
 
+import * as CompanyService from '@/services/auth/company';
 import * as AuthService from '@/services/auth/auth';
 import * as UserService from '@/services/auth/user';
-import { User, UserProvider } from '@/interfaces/auth';
-import UserModel from '@/models/user';
-import CompanyModel from '@/models/company';
+import {
+  GeneralUser, User, UserProvider, isCompany,
+} from '@/interfaces/auth';
 
 dotenv.config();
 
@@ -26,7 +30,10 @@ export const localStrategy = new LocalStrategy(
   { usernameField: 'username', passwordField: 'password' },
   async (username, password, done) => {
     try {
+      console.log(username);
+      console.log(password);
       const result = await AuthService.authenticateCompany(username, password);
+      console.log(result);
       if (result.data) { return done(null, result.data); }
       return done(null);
     } catch (err) {
@@ -44,7 +51,7 @@ export const googleStrategy = new GoogleStrategy({
     const { email } = profile._json;
     if (email) {
       const result = await UserService.getByEmail(email, UserProvider.Google);
-      if (result.data) return done(null, result.data);
+      if (result.data) { return done(null, result.data); }
 
       const newUser: User = {
         email,
@@ -72,10 +79,10 @@ export const kakaoStrategy = new KakaoStrategy({
   callbackURL: '/auth/kakao/redirect',
 }, async (accessToken, refreshToken, profile, done) => {
   try {
-    const { email } = profile._json as oauthResponse;
+    const { email } = profile._json.kakao_account as oauthResponse;
     if (email) {
       const result = await UserService.getByEmail(email, UserProvider.Kakao);
-      if (result.data) return done(null, result.data);
+      if (result.data) { return done(null, result.data); }
 
       const newUser: User = {
         email,
@@ -131,20 +138,24 @@ export const githubStrategy = new GithubStrategy({
 });
 
 export const serialize = (user: any, done: any) => {
-  done(null, user);
+  if (isCompany(user)) {
+    done(null, { type: 'company', userData: user });
+  } else {
+    done(null, { type: 'user', userData: user });
+  }
 };
 
-export const deserialize = (user: any, done: any) => {
-  if (user instanceof UserModel) {
-    UserService.getByEmail(user.email, user.provider)
+export const deserialize = (user: GeneralUser, done: any) => {
+  if (isCompany(user.userData)) {
+    CompanyService.getByName(user.userData.name)
       .then((result) => {
         if (result.data) { done(null, result.data); } else done(null);
       })
       .catch((err) => { console.log(err); });
-  } else if (user instanceof CompanyModel) {
-    CompanyModel.findOne({ username: user.username })
+  } else {
+    UserService.getByEmail(user.userData.email, user.userData.provider)
       .then((result) => {
-        if (result) { done(null, result); } else done(null);
+        if (result.data) { done(null, result.data); } else done(null);
       })
       .catch((err) => { console.log(err); });
   }

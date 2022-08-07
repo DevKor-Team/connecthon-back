@@ -47,3 +47,14 @@ export interface UserModel extends User {
 export interface CompanyModel extends Company {
   id: ObjectID;
 }
+
+export type userType = 'company' | 'user';
+
+export interface GeneralUser {
+  type: userType;
+  userData: CompanyModel | UserModel;
+}
+
+export function isCompany(user: UserModel | CompanyModel): user is CompanyModel {
+  return (user as UserModel).provider === undefined;
+}

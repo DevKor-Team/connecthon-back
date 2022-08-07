@@ -30,7 +30,7 @@ export async function get(id: ObjectID | string)
 export async function getByEmail(email: string, provider: UserProvider)
   : Promise<ServiceResult<UserModelType>> {
   const user = await UserModel.findOne({ email, provider });
-  if (!user) throw Error('User Not Found');
+  if (!user) return { data: undefined };
   return {
     data: {
       id: user._id,
@@ -40,8 +40,8 @@ export async function getByEmail(email: string, provider: UserProvider)
       profile: user.profile,
       provider: user.provider,
       isAdmin: user.isAdmin,
-    }
-  }
+    },
+  };
 }
 
 export async function getList()
