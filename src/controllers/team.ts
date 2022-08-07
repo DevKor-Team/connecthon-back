@@ -65,7 +65,10 @@ export async function addUser(
 ) {
   try {
     if (req.isAuthenticated()) {
-      const result = await TeamService.addUser(req.params.id, req.user.id); // todo - user id type
+      const result = await TeamService.addUser(
+        req.params.id,
+        req.user.userData.id,
+      ); // todo - user id type
       res.json(result);
     } else {
       throw new Error('Unauthenticated User');

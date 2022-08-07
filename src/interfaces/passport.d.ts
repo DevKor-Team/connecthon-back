@@ -1,15 +1,13 @@
-import { UserModel as UserType, CompanyModel as CompanyType } from '@/interfaces/auth';
-import { Request } from 'express';
+import { GeneralUser } from '@/interfaces/auth';
 
 declare global {
-    namespace Express {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface AuthInfo {}
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface User extends UserType, CompanyType {}
-//   type User = UserType | CompanyType
+  namespace Express {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface AuthInfo {}
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface User extends GeneralUser {}
 
-  interface Request {
+    interface Request {
       authInfo?: AuthInfo | undefined;
       user?: User | undefined;
 
@@ -28,14 +26,14 @@ declare global {
       isAuthenticated(): this is AuthenticatedRequest;
       // eslint-disable-next-line no-use-before-define
       isUnauthenticated(): this is UnauthenticatedRequest;
-  }
+    }
 
-  interface AuthenticatedRequest extends Request {
+    interface AuthenticatedRequest extends Request {
       user: User;
-  }
+    }
 
-  interface UnauthenticatedRequest extends Request {
+    interface UnauthenticatedRequest extends Request {
       user?: undefined;
-  }
+    }
   }
 }

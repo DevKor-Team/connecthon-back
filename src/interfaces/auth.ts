@@ -31,13 +31,13 @@ export interface User {
 export interface Company {
   name: string;
   profile?: Profile;
+  level: number;
 }
 
 // fields that not be shown
 export interface CompanySignup extends Company {
   username: string;
   password: string;
-  level: number;
 }
 
 export interface UserModel extends User {
