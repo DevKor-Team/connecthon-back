@@ -101,15 +101,15 @@ describe('project service', () => {
     }));
     const userIds = users.filter((id: ObjectID | undefined): id is ObjectID => id !== undefined);
     const update = { likes: userIds };
-    const res = await projectService.update(projectId, update);
+    const res = await projectService.update(teamId, update);
     expect(res?.data.likes).toHaveLength(2);
 
     const dislike = { likes: [userIds[0]] };
-    const disLiked = await projectService.update(projectId, dislike);
+    const disLiked = await projectService.update(teamId, dislike);
     expect(disLiked?.data.likes).toHaveLength(1);
 
     const dislike2 = { likes: [userIds[1]] };
-    const disLiked2 = await projectService.update(projectId, dislike2);
+    const disLiked2 = await projectService.update(teamId, dislike2);
     expect(disLiked2?.data.likes).toHaveLength(0);
   });
   it('update project', async () => {
@@ -124,11 +124,11 @@ describe('project service', () => {
       stack: [] as string[],
       likes: [],
     };
-    const res = await projectService.update(projectId, firstUpdate);
+    const res = await projectService.update(teamId, firstUpdate);
     expect(res?.data).toMatchObject(expected);
 
     expected.stack = stack;
-    const secondRes = await (projectService.update(projectId, secondUpdate));
+    const secondRes = await (projectService.update(teamId, secondUpdate));
     expect(secondRes?.data).toMatchObject(expected);
   });
   it('delete project', async () => {

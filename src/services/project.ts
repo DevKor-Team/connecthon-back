@@ -61,9 +61,9 @@ export async function create(teamId: ObjectID | string):
   };
 }
 
-export async function update(id: ObjectID | string, change: Partial<Project>):
+export async function update(teamId: ObjectID | string, change: Partial<Project>):
   Promise<ServiceResult<ProjectModelType>> {
-  const projectObj = await ProjectModel.findById(id);
+  const projectObj = await ProjectModel.findOne({ team: teamId });
 
   if (!projectObj) {
     throw Error('Project Not Found');

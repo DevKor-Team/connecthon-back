@@ -9,7 +9,7 @@ export async function get(teamId: ObjectID | string)
   : Promise<ServiceResult<ProjectTempModelType>> {
   const tempObj = await TempModel.findOne({ team: teamId });
   if (!tempObj) {
-    throw Error('Temp Not Found');
+    return { data: undefined };
   }
   return {
     data: {
