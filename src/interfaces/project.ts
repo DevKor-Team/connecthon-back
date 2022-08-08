@@ -15,3 +15,7 @@ export interface Project extends ProjectTemp {
 export interface ProjectModel extends Project {
   id: ObjectID;
 }
+
+export interface ProjectTempModel extends ProjectTemp {
+  id: ObjectID;
+}
