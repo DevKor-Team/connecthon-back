@@ -14,7 +14,9 @@ export async function get(teamId: ObjectID | string)
   return {
     data: {
       id: tempObj._id,
-      ...tempObj,
+      stack: tempObj.stack,
+      team: tempObj.team,
+      content: tempObj.content,
     },
   };
 }
@@ -39,34 +41,40 @@ export async function create(teamId: ObjectID | string):
   return {
     data: {
       id: tempObj._id,
-      ...tempObj,
+      stack: tempObj.stack,
+      team: tempObj.team,
+      content: tempObj.content,
     },
   };
 }
 
-export async function update(id: ObjectID | string, change: Partial<ProjectTemp>):
+export async function update(teamId: ObjectID | string, change: Partial<ProjectTemp>):
   Promise<ServiceResult<ProjectTempModelType>> {
-  const tempObj = await TempModel.findById(id);
+  const tempObj = await TempModel.findOne({
+    team: teamId,
+  });
 
   if (!tempObj) {
     throw Error('Temp Not Found');
   }
 
-  if (change.team) change.team = undefined;
-
   Object.assign(tempObj, change);
   const newTempObj = await tempObj.save();
   return {
     data: {
-      id: newTempObj._id,
-      ...newTempObj,
+      id: tempObj._id,
+      stack: tempObj.stack,
+      team: tempObj.team,
+      content: tempObj.content,
     },
   };
 }
 
-export async function deleteObj(id: ObjectID | string):
+export async function deleteObj(teamId: ObjectID | string):
   Promise<ServiceResult<ProjectTempModelType>> {
-  const tempObj = await TempModel.findById(id);
+  const tempObj = await TempModel.findOne({
+    team: teamId,
+  });
   if (!tempObj) {
     throw Error('Temp Not Found');
   }
@@ -74,7 +82,9 @@ export async function deleteObj(id: ObjectID | string):
   return {
     data: {
       id: tempObj._id,
-      ...tempObj,
+      stack: tempObj.stack,
+      team: tempObj.team,
+      content: tempObj.content,
     },
   };
 }

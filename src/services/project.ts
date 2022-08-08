@@ -13,7 +13,10 @@ export async function get(teamId: ObjectID | string)
   return {
     data: {
       id: projectObj._id,
-      ...projectObj,
+      content: projectObj.content,
+      stack: projectObj.stack,
+      team: projectObj.team,
+      likes: projectObj.likes,
     },
   };
 }
@@ -50,7 +53,10 @@ export async function create(teamId: ObjectID | string):
   return {
     data: {
       id: projectObj._id,
-      ...projectObj,
+      content: projectObj.content,
+      stack: projectObj.stack,
+      team: projectObj.team,
+      likes: projectObj.likes,
     },
   };
 }
@@ -63,24 +69,25 @@ export async function update(id: ObjectID | string, change: Partial<Project>):
     throw Error('Project Not Found');
   }
 
-  if (change.team) change.team = undefined;
   if (change.likes) {
     change.likes.forEach((like) => {
       if (projectObj.likes.includes(like)) {
-        projectObj.likes = projectObj.likes.filter((val) => (val !== like));
+        projectObj.likes = projectObj.likes.filter((val) => (val.toString() !== like.toString()));
       } else {
         projectObj.likes.push(like);
       }
     });
-    change.likes = undefined;
+    change.likes = projectObj.likes;
   }
-
   Object.assign(projectObj, change);
   const newProjectObj = await projectObj.save();
   return {
     data: {
       id: newProjectObj._id,
-      ...newProjectObj,
+      content: newProjectObj.content,
+      stack: newProjectObj.stack,
+      team: newProjectObj.team,
+      likes: newProjectObj.likes,
     },
   };
 }
@@ -95,7 +102,10 @@ export async function deleteObj(id: ObjectID | string):
   return {
     data: {
       id: projectObj._id,
-      ...projectObj,
+      content: projectObj.content,
+      stack: projectObj.stack,
+      team: projectObj.team,
+      likes: projectObj.likes,
     },
   };
 }
