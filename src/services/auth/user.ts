@@ -67,9 +67,6 @@ export async function update(id: ObjectID | string, change: Partial<UserType>, i
   let updates: Partial<UserType> = {};
   // todo - satisfying types... lodash.pick occurs type error
   if (!isAdmin) {
-    if ('team' in change) {
-      updates.team = change.team;
-    }
     if ('profile' in change) {
       updates.profile = change.profile;
     }

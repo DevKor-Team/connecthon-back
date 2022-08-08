@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import * as userService from '@/services/auth/user';
 import { ObjectId } from 'bson';
 import { UserProvider } from '@/interfaces/auth';
