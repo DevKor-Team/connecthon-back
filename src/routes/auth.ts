@@ -9,22 +9,6 @@ const router = express.Router();
 
 router.get('/logout', isAuth, AuthController.logout);
 router.get('/user', isAuth, AuthController.getSessionUser);
-
-router.get('/login', (req, res, next) => {
-  res.send(`<h1>Sign in</h1>
-<form action="http://localhost:8080/auth/local" method="post">
-    <section>
-        <label for="username">Username</label>
-        <input id="username" name="username" type="text" autocomplete="username" required autofocus>
-    </section>
-    <section>
-        <label for="current-password">Password</label>
-        <input id="password" name="password" type="password" autocomplete="current-password" required>
-    </section>
-    <button type="submit">Sign in</button>
-</form>`);
-});
-
 router.post('/local', AuthController.localLogin);
 router.get('/google', AuthController.googleLogin);
 router.get('/kakao', AuthController.kakaoLogin);
