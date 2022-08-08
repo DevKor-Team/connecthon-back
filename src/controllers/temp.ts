@@ -23,7 +23,7 @@ export const update = async (
     const result = await TempService.update(req.params.id, req.body.change);
     res.json(result);
   } catch (err) {
-    res.json({ reason: 'nor found' });
+    res.json({ reason: 'not found' });
     next(err);
   }
 };

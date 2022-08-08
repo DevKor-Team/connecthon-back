@@ -93,13 +93,13 @@ export const remove = async (
 export const like = async (
   req: Request<Record<string, never>,
     Record<string, never>,
-    { user: ObjectId, project: string }>,
+    { user: ObjectId, team: string }>,
   res: Response,
   next: NextFunction,
 ) => {
   try {
     const change = { likes: [req.body.user] };
-    const result = await ProjectService.update(req.body.project, change);
+    const result = await ProjectService.update(req.body.team, change);
     res.json(result);
   } catch (err) {
     res.status(400).json({ reason: 'err' });
