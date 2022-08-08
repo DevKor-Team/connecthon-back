@@ -1,9 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable no-underscore-dangle */
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { Strategy as GoogleStrategy, VerifyCallback } from 'passport-google-oauth20';
 import { Strategy as KakaoStrategy } from 'passport-kakao';
 import { Strategy as GithubStrategy } from 'passport-github';
 import { Strategy as LocalStrategy } from 'passport-local';
@@ -13,7 +10,7 @@ import * as CompanyService from '@/services/auth/company';
 import * as AuthService from '@/services/auth/auth';
 import * as UserService from '@/services/auth/user';
 import {
-  GeneralUser, User, UserProvider, isCompany,
+  User, UserProvider, UserModel as UserModelType,
 } from '@/interfaces/auth';
 
 dotenv.config();
@@ -28,16 +25,24 @@ interface githubOauthResponse extends oauthResponse {
 
 export const localStrategy = new LocalStrategy(
   { usernameField: 'username', passwordField: 'password' },
-  async (username, password, done) => {
+  async (username, password, done: VerifyCallback) => {
     try {
       console.log(username);
       console.log(password);
       const result = await AuthService.authenticateCompany(username, password);
-      console.log(result);
-      if (result.data) { return done(null, result.data); }
+      console.log('authenticateCompany', result);
+      if (result.data) {
+        return done(
+          null,
+          {
+            type: 'company',
+            userData: result.data,
+          },
+        );
+      }
       return done(null);
     } catch (err) {
-      return done(err);
+      return done(err as Error);
     }
   },
 );
@@ -51,7 +56,15 @@ export const googleStrategy = new GoogleStrategy({
     const { email } = profile._json;
     if (email) {
       const result = await UserService.getByEmail(email, UserProvider.Google);
-      if (result.data) { return done(null, result.data); }
+      if (result.data) {
+        return done(
+          null,
+          {
+            type: 'user',
+            userData: result.data,
+          },
+        );
+      }
 
       const newUser: User = {
         email,
@@ -66,7 +79,15 @@ export const googleStrategy = new GoogleStrategy({
         provider: UserProvider.Google,
       };
       const registerResult = await UserService.create(newUser);
-      return done(null, registerResult.data);
+      if (registerResult.data) {
+        return done(
+          null,
+          {
+            type: 'user',
+            userData: registerResult.data,
+          },
+        );
+      }
     }
     throw Error('email not found from oauth');
   } catch (err) {
@@ -77,12 +98,21 @@ export const googleStrategy = new GoogleStrategy({
 export const kakaoStrategy = new KakaoStrategy({
   clientID: process.env.KAKAO_CLIENT_ID!,
   callbackURL: '/auth/kakao/redirect',
-}, async (accessToken, refreshToken, profile, done) => {
+}, async (accessToken, refreshToken, profile, done: VerifyCallback) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const { email } = profile._json.kakao_account as oauthResponse;
     if (email) {
       const result = await UserService.getByEmail(email, UserProvider.Kakao);
-      if (result.data) { return done(null, result.data); }
+      if (result.data) {
+        return done(
+          null,
+          {
+            type: 'user',
+            userData: result.data,
+          },
+        );
+      }
 
       const newUser: User = {
         email,
@@ -97,11 +127,19 @@ export const kakaoStrategy = new KakaoStrategy({
         provider: UserProvider.Kakao,
       };
       const registerResult = await UserService.create(newUser);
-      return done(null, registerResult.data);
+      if (registerResult.data) {
+        return done(
+          null,
+          {
+            type: 'user',
+            userData: registerResult.data,
+          },
+        );
+      }
     }
     throw Error('email not found from oauth');
   } catch (err) {
-    return done(err);
+    return done(err as Error);
   }
 });
 
@@ -114,7 +152,15 @@ export const githubStrategy = new GithubStrategy({
     const profileJson = profile._json as githubOauthResponse;
     if (profileJson) {
       const result = await UserService.getByEmail(profileJson.email, UserProvider.Github);
-      if (result.data) return done(null, result.data);
+      if (result.data) {
+        return done(
+          null,
+          {
+            type: 'user',
+            userData: result.data,
+          },
+        );
+      }
 
       const newUser: User = {
         email: profileJson.email,
@@ -129,7 +175,15 @@ export const githubStrategy = new GithubStrategy({
         provider: UserProvider.Github,
       };
       const registerResult = await UserService.create(newUser);
-      return done(null, registerResult.data);
+      if (registerResult.data) {
+        return done(
+          null,
+          {
+            type: 'user',
+            userData: registerResult.data,
+          },
+        );
+      }
     }
     throw Error('email not found from oauth');
   } catch (err) {
@@ -137,25 +191,46 @@ export const githubStrategy = new GithubStrategy({
   }
 });
 
-export const serialize = (user: any, done: any) => {
-  if (isCompany(user)) {
-    done(null, { type: 'company', userData: user });
-  } else {
-    done(null, { type: 'user', userData: user });
-  }
+export const serialize = (
+  user: Express.User,
+  done: (err: any, user?: false | Express.User | null | undefined) => void,
+) => {
+  done(null, user);
 };
 
-export const deserialize = (user: GeneralUser, done: any) => {
-  if (isCompany(user.userData)) {
-    CompanyService.getByName(user.userData.name)
+export const deserialize = (
+  user: Express.User,
+  done: (err: any, user?: false | Express.User | null | undefined) => void,
+) => {
+  if (user.type === 'company') {
+    CompanyService.get(user.userData.id)
       .then((result) => {
-        if (result.data) { done(null, result.data); } else done(null);
+        if (result.data) {
+          done(
+            null,
+            {
+              type: 'company',
+              userData: result.data,
+            },
+          );
+        } else done(null);
       })
       .catch((err) => { console.log(err); });
-  } else {
-    UserService.getByEmail(user.userData.email, user.userData.provider)
+  } else if (user.type === 'user') {
+    UserService.getByEmail(
+      (user.userData as UserModelType).email,
+      (user.userData as UserModelType).provider,
+    )
       .then((result) => {
-        if (result.data) { done(null, result.data); } else done(null);
+        if (result.data) {
+          done(
+            null,
+            {
+              type: 'user',
+              userData: result.data,
+            },
+          );
+        } else done(null);
       })
       .catch((err) => { console.log(err); });
   }

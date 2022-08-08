@@ -9,7 +9,13 @@
     "paths": {
       "@/*": ["src/*"]
     },
+    "typeRoots": ["./src/interfaces"],
     "esModuleInterop": true,
     "resolveJsonModule": true
-  }
+  },
+  "include": ["./src/**/*", ".eslintrc.json"],
+  "ts-node": {
+    "files": true
+  },
+  "files": ["./src/interfaces/passport.d.ts"]
 }

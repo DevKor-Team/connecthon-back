@@ -4,7 +4,7 @@ import passport from 'passport';
 import * as CONSTS from '@/utils/consts';
 import { isCompany, UserModel } from '@/interfaces/auth';
 
-export const logout = async (req: Request, res: Response) => {
+export const logout = (req: Request, res: Response) => {
   try {
     req.logout((err) => {
       if (err) { return console.log(err); }
@@ -71,13 +71,10 @@ export const githubLogin = [
 ];
 
 export const getSessionUser = (req: Request, res: Response) => {
-  if (isCompany(req.user as UserModel)) {
-    res.send(
-      { type: 'company', ...req.user },
-    );
-  } else {
-    res.send(
-      { type: 'user', ...req.user },
-    );
+  if (req.user) {
+    res.send({
+      type: req.user?.type,
+      ...req.user?.userData,
+    });
   }
 };

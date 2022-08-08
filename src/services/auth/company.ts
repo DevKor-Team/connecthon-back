@@ -17,6 +17,7 @@ export async function get(id: ObjectID | string)
       id: companyObj._id,
       name: companyObj.name,
       profile: companyObj.profile,
+      level: companyObj.level,
     },
   };
 }
@@ -39,6 +40,7 @@ export async function update(
       id: newCompanyObj._id,
       name: newCompanyObj.name,
       profile: newCompanyObj.profile,
+      level: companyObj.level,
     },
   };
 }
@@ -68,6 +70,7 @@ export async function create(company: CompanySignup):
       id: companyObj._id,
       name: companyObj.name,
       profile: companyObj.profile,
+      level: companyObj.level,
     },
   };
 }
@@ -84,6 +87,7 @@ export async function deleteObj(id: ObjectID | string):
       id: companyObj._id,
       name: companyObj.name,
       profile: companyObj.profile,
+      level: companyObj.level,
     },
   };
 }
@@ -100,6 +104,7 @@ export async function getByName(name: string):
       id: companyObj._id,
       name: companyObj.name,
       profile: companyObj.profile,
+      level: companyObj.level,
     },
   };
 }
