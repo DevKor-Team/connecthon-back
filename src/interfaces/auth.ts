@@ -1,12 +1,17 @@
 import { ObjectID } from 'bson';
 
 export interface Profile {
-  img: string;
+  img?: string;
   link: {
-    github: string;
-    blog: string;
+    github?: string;
+    blog?: string;
+    instagram?: string;
   };
-  career: string;
+  position?: string;
+  career?: string;
+  major?: string;
+  university?: string;
+  introduction?: string;
 }
 
 export enum UserProvider {
