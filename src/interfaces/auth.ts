@@ -8,7 +8,7 @@ export interface Profile {
     instagram?: string;
   };
   position?: string;
-  career?: string;
+  career?: string[];
   major?: string;
   university?: string;
   introduction?: string;
