@@ -11,7 +11,7 @@ export const uploadImage = async (req: Request, res: Response, next: NextFunctio
   try {
     const image: MulterImage = req.file!;
     if (image.location) {
-      res.json(image.location);
+      res.json({ url: image.location });
     } else {
       throw Error('no image');
     }
