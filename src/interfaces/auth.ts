@@ -2,7 +2,7 @@ import { ObjectID } from 'bson';
 
 export interface Profile {
   img?: string;
-  link: {
+  link?: {
     github?: string;
     blog?: string;
     instagram?: string;
