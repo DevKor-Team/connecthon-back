@@ -2,13 +2,13 @@ import { ObjectID } from 'bson';
 
 export interface Profile {
   img?: string;
-  link: {
+  link?: {
     github?: string;
     blog?: string;
     instagram?: string;
   };
   position?: string;
-  career?: string;
+  career?: string[];
   major?: string;
   university?: string;
   introduction?: string;

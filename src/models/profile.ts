@@ -9,7 +9,7 @@ const profileSchema = new mongo.Schema<Profile>({
     instagram: { required: false, type: String },
   },
   position: { required: false, type: String },
-  career: { required: false, type: String },
+  career: [{ required: false, type: String }],
   major: { required: false, type: String },
   university: { required: false, type: String },
   introduction: { required: false, type: String },
