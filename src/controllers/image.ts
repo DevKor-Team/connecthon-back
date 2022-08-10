@@ -16,7 +16,6 @@ export const uploadImage = async (req: Request, res: Response, next: NextFunctio
       throw Error('no image');
     }
   } catch (err) {
-    res.json({ err: 'no image' });
     next(err);
   }
 };
@@ -40,7 +39,6 @@ export const uploadProfile = async (req: Request, res: Response, next: NextFunct
       throw Error('no image');
     }
   } catch (err) {
-    res.json({ err: 'no user or image' });
     next(err);
   }
 };
@@ -58,7 +56,6 @@ export const uploadTeam = async (
       throw Error('no image');
     }
   } catch (err) {
-    res.json({ err: 'no image' });
     next(err);
   }
 };
