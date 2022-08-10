@@ -13,6 +13,6 @@ export interface ChatRoom {
   msgs: Chat[];
 }
 
-export interface chatRoomModel extends ChatRoom {
+export interface ChatRoomModel extends ChatRoom {
   id: ObjectID
 }
