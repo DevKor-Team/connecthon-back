@@ -3,11 +3,12 @@ import * as TeamService from '@/services/team';
 import * as UserService from '@/services/auth/user';
 import * as CompanyService from '@/services/auth/company';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 interface MulterImage extends Express.Multer.File {
   location?: string;
 }
 
-export const uploadImage = async (req: Request, res: Response, next: NextFunction) => {
+export const uploadImage = (req: Request, res: Response, next: NextFunction) => {
   try {
     const image: MulterImage = req.file!;
     if (image.location) {

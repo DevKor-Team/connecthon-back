@@ -1,0 +1,32 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - "echo Getting UserName and Password from aws secret manager"
+      - |
+        for s in $(aws secretsmanager get-secret-value --secret-id arn:aws:secretsmanager:ap-northeast-2:231159564116:secret:DockerHubSecret-kjRgny --query 'SecretString' --output text | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" ); do
+          export $s
+        done
+      - DOCKERHUB_USERNAME=$dockerhub_username
+      - DOCKERHUB_PASSWORD=$dockerhub_password
+      - DOCKERHUB_IMAGE_NAME=$dockerhub_image_name
+      - "echo Logging in to Docker Hub... user is $DOCKERHUB_USERNAME"
+      - "docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD"
+  build:
+    commands:
+      - "echo Build started on `date`"
+      - "echo Building the Docker image..."
+      - # set env file
+      - aws secretsmanager get-secret-value --secret-id arn:aws:secretsmanager:ap-northeast-2:231159564116:secret:back/env-vukbfx --query 'SecretString' --output text | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' >> .env
+      - "docker-compose -f docker-compose.yml build"
+  post_build:
+    commands:
+      - "echo Build completed on `date`"
+      - "echo Pushing the Docker image..."
+      - "docker-compose -f docker-compose.yml push"
+
+artifacts:
+  files:
+    - "appspec.yml"
+    - "scripts/*"
+    - "docker-compose.yml"
