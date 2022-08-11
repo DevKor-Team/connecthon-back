@@ -12,6 +12,7 @@ import passport from 'passport';
 import router from '@/routes';
 import * as Passport from '@/utils/passport';
 import fs from 'fs';
+import socket from '@/utils/socket';
 
 declare module 'express-session' {
   interface SessionData {
@@ -106,6 +107,7 @@ async function createServer() {
   httpServer.listen(port, () => {
     console.log(`server listening on port ${port}`); // todo - change console.log to logger
   });
+  socket(httpServer);
 }
 
 createServer()
