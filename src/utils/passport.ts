@@ -65,12 +65,14 @@ export const googleStrategy = new GoogleStrategy({
           },
         );
       }
-
+      if (!profile.name) {
+        throw Error('please set name of your google account');
+      }
       const newUser: User = {
         email,
         name: {
-          first: profile.name!.givenName,
-          last: profile.name!.familyName,
+          first: profile.name.givenName,
+          last: profile.name.familyName,
         },
         // **TODO**
         // team:
@@ -113,12 +115,14 @@ export const kakaoStrategy = new KakaoStrategy({
           },
         );
       }
-
+      if (!profile.username) {
+        throw Error('please set username of your kakao account');
+      }
       const newUser: User = {
         email,
         name: {
-          first: profile.username!.substring(1),
-          last: profile.username!.substring(0, 1),
+          first: profile.username.substring(1),
+          last: profile.username.substring(0, 1),
         },
         // **TODO**
         // team:
@@ -161,6 +165,12 @@ export const githubStrategy = new GithubStrategy({
           },
         );
       }
+      if (!profileJson.email) {
+        throw Error('email has not found! please set email of your github account visible');
+      }
+      if (!profileJson.name) {
+        throw Error('name has not found! please set name of your github account');
+      }
 
       const newUser: User = {
         email: profileJson.email,
@@ -174,6 +184,7 @@ export const githubStrategy = new GithubStrategy({
         isAdmin: false,
         provider: UserProvider.Github,
       };
+
       const registerResult = await UserService.create(newUser);
       if (registerResult.data) {
         return done(

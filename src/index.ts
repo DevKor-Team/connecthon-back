@@ -61,7 +61,7 @@ async function expressLoader() {
 
   // parsers
   app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
   // app.use(errorHandler); // todo - error handler
   app.enable('trust proxy');

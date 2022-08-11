@@ -7,7 +7,7 @@ const schema = new mongo.Schema<User>({
   email: { required: true, type: String },
   name: {
     first: { required: true, type: String },
-    last: { required: true, type: String },
+    last: { required: false, type: String },
   },
   isAdmin: { required: true, type: Boolean, default: false },
   profile: profileSchema,
