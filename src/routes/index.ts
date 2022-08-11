@@ -6,6 +6,7 @@ import companyRouter from '@/routes/company';
 import projectRouter from '@/routes/project';
 import tempRouter from '@/routes/temp';
 import imageRouter from '@/routes/image';
+import chatRouter from '@/routes/chat';
 
 const router = express.Router();
 
@@ -19,5 +20,6 @@ router.use('/companies', companyRouter);
 router.use('/project', projectRouter);
 router.use('/temp', tempRouter);
 router.use('/image', imageRouter);
+router.use('/chat', chatRouter);
 
 export default router;

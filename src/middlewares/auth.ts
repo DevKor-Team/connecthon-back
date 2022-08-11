@@ -72,3 +72,13 @@ export function isParticipant(req: Request, res: Response, next: NextFunction) {
     throw new Error('Current user is company');
   }
 }
+
+export function isCompany(req: Request, res: Response, next: NextFunction) {
+  if (!req.isAuthenticated()) {
+    throw new Error('Unauthenticated User');
+  } else if (req.user.type === 'user') {
+    throw new Error('Current user is not company');
+  } else if (req.user.type === 'company') {
+    next();
+  }
+}
