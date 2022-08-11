@@ -14,4 +14,4 @@ else
   sudo docker rm ${CONTAINER_ID}
 fi
 
-docker-compose down -v
+docker-compose -f /deploy/docker-compose.yml down -v
