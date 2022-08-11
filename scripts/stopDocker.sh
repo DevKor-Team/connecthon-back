@@ -13,3 +13,5 @@ else
   echo "> docker rm ${CONTAINER_ID}"
   sudo docker rm ${CONTAINER_ID}
 fi
+
+docker-compose down -v
