@@ -8,6 +8,6 @@ const router = express.Router();
 
 router.post('/create', isCompany, Controller.openNew);
 router.get('/:id', Controller.get); // chat room id
-router.get('/:id/:sender', Controller.getList); // user id
+router.get('/', Controller.getList); // user id
 
 export default router;

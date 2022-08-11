@@ -8,7 +8,7 @@ export const get = async (
   next: NextFunction,
 ) => {
   try {
-    if (req.isAuthenticated()) {
+    if (!req.isAuthenticated()) {
       throw Error('unvalid request');
     }
     const result = await ChatService.get(req.params.id);
@@ -23,12 +23,15 @@ export const get = async (
   }
 };
 export const getList = async (
-  req: Request<{ id: string, sender: userType }>,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const result = await ChatService.getList(req.params.id, req.params.sender);
+    if (!req.isAuthenticated()) {
+      throw Error('unvalid request');
+    }
+    const result = await ChatService.getList(req.user.userData.id, req.user.type);
     res.json(result);
   } catch (err) {
     next(err);
