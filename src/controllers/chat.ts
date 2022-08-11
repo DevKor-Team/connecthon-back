@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import * as ChatService from '@/services/chat';
-import { userType } from '@/interfaces/auth';
 
 export const get = async (
   req: Request<{ id: string }>,
