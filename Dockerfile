@@ -7,13 +7,14 @@ COPY ./tsconfig.json ./
 COPY ./.env ./
 
 RUN yarn install
+RUN yarn add aws-sdk
 COPY . .
 
 ## compile typescript
 RUN yarn build
 
 ## remove packages of devDependencies
-RUN yarn install --production --ignore-scripts --prefer-offline
+# RUN yarn install --production --ignore-scripts --prefer-offline
 ## npm prune --production
 
 # ===================================================
