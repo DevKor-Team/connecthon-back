@@ -16,3 +16,7 @@ export interface ChatRoom {
 export interface ChatRoomModel extends ChatRoom {
   id: ObjectID
 }
+
+export interface Message extends Chat {
+  room: ObjectID;
+}
