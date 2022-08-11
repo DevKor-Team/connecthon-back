@@ -7,7 +7,6 @@ COPY ./tsconfig.json ./
 COPY ./.env ./
 
 RUN yarn install
-RUN yarn add aws-sdk
 COPY . .
 
 ## compile typescript
