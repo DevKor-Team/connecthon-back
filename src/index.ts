@@ -11,6 +11,7 @@ import passport from 'passport';
 
 import router from '@/routes';
 import * as Passport from '@/utils/passport';
+import fs from 'fs';
 
 declare module 'express-session' {
   interface SessionData {
@@ -22,7 +23,13 @@ if (process.env.NODE_ENV === 'development') {
     path: '.env',
   });
 } else if (process.env.NODE_ENV === 'prouction') {
-  console.log('on production mode, set environment variables via other way');
+  if (fs.existsSync('env')) {
+    dotenv.config({
+      path: '.env',
+    });
+  } else {
+    console.log('on production mode, set environment variables via other way');
+  }
 }
 
 // setup
