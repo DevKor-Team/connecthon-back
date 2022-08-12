@@ -77,15 +77,11 @@ export const getSessionUser = (req: Request, res: Response, next: NextFunction) 
     if (!req.isAuthenticated()) {
       // throw Error('Not logged in');
       res.status(401).json('NOT LOGGED IN');
-    } else if (req.user) {
-      res.json({
-        type: req.user.type,
-        ...req.user.userData,
-      });
-      // next();
     } else {
-      res.status(401).json('NOT LOGGED IN');
-      // next();
+      res.json({
+        type: req.user?.type,
+        ...req.user?.userData,
+      });
     }
   } catch (err) {
     next(err);
