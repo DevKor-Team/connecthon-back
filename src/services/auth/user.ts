@@ -23,13 +23,14 @@ export async function get(id: ObjectID | string)
       profile: userObj.profile,
       provider: userObj.provider,
       isAdmin: userObj.isAdmin,
+      oauthid: userObj.oauthid,
     },
   };
 }
 
-export async function getByEmail(email: string, provider: UserProvider)
+export async function getByEmail(oauthid: string)
   : Promise<ServiceResult<UserModelType>> {
-  const user = await UserModel.findOne({ email, provider });
+  const user = await UserModel.findOne({ oauthid });
   if (!user) return { data: undefined };
   return {
     data: {
@@ -40,6 +41,7 @@ export async function getByEmail(email: string, provider: UserProvider)
       profile: user.profile,
       provider: user.provider,
       isAdmin: user.isAdmin,
+      oauthid: user.oauthid,
     },
   };
 }
@@ -55,6 +57,7 @@ export async function getList()
     profile: userObj.profile,
     provider: userObj.provider,
     isAdmin: userObj.isAdmin,
+    oauthid: userObj.oauthid,
   }));
   return {
     data: userList,
@@ -88,6 +91,7 @@ export async function update(id: ObjectID | string, change: Partial<UserType>, i
       profile: newUserObj.profile,
       provider: newUserObj.provider,
       isAdmin: newUserObj.isAdmin,
+      oauthid: userObj.oauthid,
     },
   };
 }
@@ -96,8 +100,7 @@ export async function create(user: UserType):
   Promise<ServiceResult<UserModelType>> {
   const existingUser = await UserModel.findOne({
     $or: [{
-      email: user.email,
-      provider: user.provider,
+      oauthid: user.oauthid,
     }],
   });
 
@@ -118,6 +121,7 @@ export async function create(user: UserType):
       profile: userObj.profile,
       provider: userObj.provider,
       isAdmin: userObj.isAdmin,
+      oauthid: userObj.oauthid,
     },
   };
 }
@@ -138,6 +142,7 @@ export async function deleteObj(id: ObjectID | string):
       profile: userObj.profile,
       provider: userObj.provider,
       isAdmin: userObj.isAdmin,
+      oauthid: userObj.oauthid,
     },
   };
 }

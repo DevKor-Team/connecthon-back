@@ -2,7 +2,6 @@
 import { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 import * as CONSTS from '@/utils/consts';
-import { isCompany, UserModel } from '@/interfaces/auth';
 
 export const logout = (req: Request, res: Response) => {
   try {

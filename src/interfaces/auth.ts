@@ -21,15 +21,16 @@ export enum UserProvider {
 }
 
 export interface User {
-  email: string;
+  email?: string;
   name: {
-    first: string;
+    first?: string;
     last?: string;
   };
   team?: ObjectID;
   profile?: Profile;
   isAdmin: boolean;
   provider: UserProvider;
+  oauthid: string;
 }
 
 // fields can be shown

@@ -1,3 +1,5 @@
+/* eslint-disable prefer-destructuring */
+/* eslint-disable consistent-return */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable no-underscore-dangle */
 import { Strategy as GoogleStrategy, VerifyCallback } from 'passport-google-oauth20';
@@ -14,7 +16,6 @@ import {
 } from '@/interfaces/auth';
 
 dotenv.config();
-
 interface oauthResponse {
   email: string;
 }
@@ -22,7 +23,6 @@ interface oauthResponse {
 interface githubOauthResponse extends oauthResponse {
   name: string;
 }
-
 export const localStrategy = new LocalStrategy(
   { usernameField: 'username', passwordField: 'password' },
   async (username, password, done: VerifyCallback) => {
@@ -53,45 +53,45 @@ export const googleStrategy = new GoogleStrategy({
   callbackURL: '/auth/google/redirect',
 }, async (accessToken, refreshToken, profile, done) => {
   try {
-    const { email } = profile._json;
-    if (email) {
-      const result = await UserService.getByEmail(email, UserProvider.Google);
-      if (result.data) {
-        return done(
-          null,
-          {
-            type: 'user',
-            userData: result.data,
-          },
-        );
-      }
-      if (!profile.name) {
-        throw Error('please set name of your google account');
-      }
-      const newUser: User = {
-        email,
-        name: {
-          first: profile.name.givenName,
-          last: profile.name.familyName,
+    const result = await UserService.getByEmail(profile.id);
+    if (result.data) {
+      return done(
+        null,
+        {
+          type: 'user',
+          userData: result.data,
         },
-        // **TODO**
-        // team:
-        // profile:
-        isAdmin: false,
-        provider: UserProvider.Google,
-      };
-      const registerResult = await UserService.create(newUser);
-      if (registerResult.data) {
-        return done(
-          null,
-          {
-            type: 'user',
-            userData: registerResult.data,
-          },
-        );
-      }
+      );
     }
-    throw Error('email not found from oauth');
+    const newUser: User = {
+      name: { first: undefined, last: undefined },
+      oauthid: profile.id,
+      isAdmin: false,
+      provider: UserProvider.Google,
+    };
+    if (profile._json.email) {
+      newUser.email = profile._json.email;
+    }
+    if (profile.name) {
+      if (profile.name.givenName) {
+        newUser.name.first = profile.name.givenName;
+      }
+      if (profile.name.familyName) {
+        newUser.name.last = profile.name.familyName;
+      }
+    } else if (profile.displayName) {
+      newUser.name.first = profile.displayName;
+    }
+    const registerResult = await UserService.create(newUser);
+    if (registerResult.data) {
+      return done(
+        null,
+        {
+          type: 'user',
+          userData: registerResult.data,
+        },
+      );
+    }
   } catch (err) {
     return done(err as Error);
   }
@@ -103,45 +103,43 @@ export const kakaoStrategy = new KakaoStrategy({
 }, async (accessToken, refreshToken, profile, done: VerifyCallback) => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const { email } = profile._json.kakao_account as oauthResponse;
-    if (email) {
-      const result = await UserService.getByEmail(email, UserProvider.Kakao);
-      if (result.data) {
-        return done(
-          null,
-          {
-            type: 'user',
-            userData: result.data,
-          },
-        );
-      }
-      if (!profile.username) {
-        throw Error('please set username of your kakao account');
-      }
-      const newUser: User = {
-        email,
-        name: {
-          first: profile.username.substring(1),
-          last: profile.username.substring(0, 1),
+    const result = await UserService.getByEmail(profile.id);
+    if (result.data) {
+      return done(
+        null,
+        {
+          type: 'user',
+          userData: result.data,
         },
-        // **TODO**
-        // team:
-        // profile:
-        isAdmin: false,
-        provider: UserProvider.Kakao,
-      };
-      const registerResult = await UserService.create(newUser);
-      if (registerResult.data) {
-        return done(
-          null,
-          {
-            type: 'user',
-            userData: registerResult.data,
-          },
-        );
-      }
+      );
     }
-    throw Error('email not found from oauth');
+    const newUser: User = {
+      name: {
+      },
+      isAdmin: false,
+      provider: UserProvider.Kakao,
+      oauthid: profile.id,
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const json = profile._json.kakao_account as oauthResponse;
+    if (json.email) {
+      newUser.email = json.email;
+    }
+    if (profile.username) {
+      newUser.name.first = profile.username.substring(1);
+      newUser.name.last = profile.username.substring(0, 1);
+    }
+    const registerResult = await UserService.create(newUser);
+    if (registerResult.data) {
+      return done(
+        null,
+        {
+          type: 'user',
+          userData: registerResult.data,
+        },
+      );
+    }
   } catch (err) {
     return done(err as Error);
   }
@@ -153,50 +151,43 @@ export const githubStrategy = new GithubStrategy({
   callbackURL: '/auth/github/redirect',
 }, async (accessToken, refreshToken, profile, done) => {
   try {
-    const profileJson = profile._json as githubOauthResponse;
-    if (profileJson) {
-      const result = await UserService.getByEmail(profileJson.email, UserProvider.Github);
-      if (result.data) {
-        return done(
-          null,
-          {
-            type: 'user',
-            userData: result.data,
-          },
-        );
-      }
-      if (!profileJson.email) {
-        throw Error('email has not found! please set email of your github account visible');
-      }
-      if (!profileJson.name) {
-        throw Error('name has not found! please set name of your github account');
-      }
-
-      const newUser: User = {
-        email: profileJson.email,
-        name: {
-          first: profileJson.name.split(' ')[0],
-          last: profileJson.name.split(' ')[1],
+    const result = await UserService.getByEmail(profile.id);
+    if (result.data) {
+      return done(
+        null,
+        {
+          type: 'user',
+          userData: result.data,
         },
-        // **TODO**
-        // team:
-        // profile:
-        isAdmin: false,
-        provider: UserProvider.Github,
-      };
-
-      const registerResult = await UserService.create(newUser);
-      if (registerResult.data) {
-        return done(
-          null,
-          {
-            type: 'user',
-            userData: registerResult.data,
-          },
-        );
-      }
+      );
     }
-    throw Error('email not found from oauth');
+    const json = profile._json as githubOauthResponse;
+    const newUser: User = {
+      name: {
+      },
+      oauthid: profile.id,
+
+      isAdmin: false,
+      provider: UserProvider.Github,
+    };
+    if (json.email) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      newUser.email = json.email;
+    }
+    if (json.name) {
+      newUser.name.first = json.name.split(' ')[0];
+      newUser.name.last = json.name.split(' ')[1];
+    }
+    const registerResult = await UserService.create(newUser);
+    if (registerResult.data) {
+      return done(
+        null,
+        {
+          type: 'user',
+          userData: registerResult.data,
+        },
+      );
+    }
   } catch (err) {
     return done(err as Error);
   }
@@ -229,8 +220,7 @@ export const deserialize = (
       .catch((err) => { console.log(err); });
   } else if (user.type === 'user') {
     UserService.getByEmail(
-      (user.userData as UserModelType).email,
-      (user.userData as UserModelType).provider,
+      (user.userData as UserModelType).oauthid,
     )
       .then((result) => {
         if (result.data) {
