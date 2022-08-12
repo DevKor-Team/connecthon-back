@@ -7,7 +7,7 @@ import * as CONSTS from '@/utils/consts';
 const router = express.Router();
 
 router.get('/logout', AuthController.logout);
-router.get('/user',  AuthController.getSessionUser);
+router.get('/user', AuthController.getSessionUser);
 router.post('/local', AuthController.localLogin);
 router.get('/google', AuthController.googleLogin);
 router.get('/kakao', AuthController.kakaoLogin);
