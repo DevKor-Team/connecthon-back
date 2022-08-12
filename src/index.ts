@@ -51,7 +51,10 @@ async function expressLoader() {
 
   const app = express();
   app.use(helmet());
-
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); // 모든 도메인 허용
+    next();
+  });
   // parsers
   app.use(express.json());
   app.use(express.urlencoded({ extended: true, limit: '5mb' }));
