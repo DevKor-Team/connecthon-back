@@ -75,6 +75,7 @@ export const githubLogin = [
 export const getSessionUser = (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.isAuthenticated()) {
+      // throw Error('Not logged in');
       res.status(401).json('NOT LOGGED IN');
     } else {
       res.json({
