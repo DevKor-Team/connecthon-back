@@ -2,13 +2,15 @@
 import { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 import * as CONSTS from '@/utils/consts';
-import { isCompany, UserModel } from '@/interfaces/auth';
 
 export const logout = (req: Request, res: Response) => {
   try {
+    if (!req.isAuthenticated()) {
+      res.status(401).json('NOT LOGGED IN');
+    }
     req.logout((err) => {
       if (err) { return console.log(err); }
-      res.redirect('/');
+      res.redirect(CONSTS.LOGIN_SUCCESS_REDIRECT);
     });
   } catch (err) {
     console.log(err);
@@ -71,10 +73,13 @@ export const githubLogin = [
 ];
 
 export const getSessionUser = (req: Request, res: Response) => {
+  if (!req.isAuthenticated()) {
+    res.status(401).json('NOT LOGGED IN');
+  }
   if (req.user) {
-    res.send({
+    res.json({
       type: req.user?.type,
-      ...req.user?.userData,
+      data: req.user.userData,
     });
   }
 };
