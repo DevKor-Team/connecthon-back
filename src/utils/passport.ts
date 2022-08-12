@@ -53,7 +53,7 @@ export const googleStrategy = new GoogleStrategy({
   callbackURL: '/auth/google/redirect',
 }, async (accessToken, refreshToken, profile, done) => {
   try {
-    const result = await UserService.getByEmail(profile.id);
+    const result = await UserService.getByOauthId(profile.id);
     if (result.data) {
       return done(
         null,
@@ -73,11 +73,13 @@ export const googleStrategy = new GoogleStrategy({
       newUser.email = profile._json.email;
     }
     if (profile.name) {
-      if (profile.name.givenName) {
-        newUser.name.first = profile.name.givenName;
-      }
       if (profile.name.familyName) {
-        newUser.name.last = profile.name.familyName;
+        newUser.name.first = profile.name.familyName;
+      }
+      if (profile.name.givenName && newUser.name.first) {
+        newUser.name.first = newUser.name.first.concat(profile.name.givenName);
+      } else if (profile.name.givenName) {
+        newUser.name.first = profile.name.givenName;
       }
     } else if (profile.displayName) {
       newUser.name.first = profile.displayName;
@@ -103,7 +105,7 @@ export const kakaoStrategy = new KakaoStrategy({
 }, async (accessToken, refreshToken, profile, done: VerifyCallback) => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const result = await UserService.getByEmail(profile.id);
+    const result = await UserService.getByOauthId(profile.id);
     if (result.data) {
       return done(
         null,
@@ -127,8 +129,7 @@ export const kakaoStrategy = new KakaoStrategy({
       newUser.email = json.email;
     }
     if (profile.username) {
-      newUser.name.first = profile.username.substring(1);
-      newUser.name.last = profile.username.substring(0, 1);
+      newUser.name.first = profile.username;
     }
     const registerResult = await UserService.create(newUser);
     if (registerResult.data) {
@@ -151,7 +152,7 @@ export const githubStrategy = new GithubStrategy({
   callbackURL: '/auth/github/redirect',
 }, async (accessToken, refreshToken, profile, done) => {
   try {
-    const result = await UserService.getByEmail(profile.id);
+    const result = await UserService.getByOauthId(profile.id);
     if (result.data) {
       return done(
         null,
@@ -175,8 +176,7 @@ export const githubStrategy = new GithubStrategy({
       newUser.email = json.email;
     }
     if (json.name) {
-      newUser.name.first = json.name.split(' ')[0];
-      newUser.name.last = json.name.split(' ')[1];
+      newUser.name.first = json.name;
     }
     const registerResult = await UserService.create(newUser);
     if (registerResult.data) {

@@ -28,7 +28,7 @@ export async function get(id: ObjectID | string)
   };
 }
 
-export async function getByEmail(oauthid: string)
+export async function getByOauthId(oauthid: string)
   : Promise<ServiceResult<UserModelType>> {
   const user = await UserModel.findOne({ oauthid });
   if (!user) return { data: undefined };
@@ -72,6 +72,12 @@ export async function update(id: ObjectID | string, change: Partial<UserType>, i
   if (!isAdmin) {
     if ('profile' in change) {
       updates.profile = change.profile;
+    }
+    if ('email' in change) {
+      updates.email = change.email;
+    }
+    if ('name' in change) {
+      updates.name = change.name;
     }
   } else {
     updates = change;
