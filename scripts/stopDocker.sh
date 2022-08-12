@@ -15,3 +15,4 @@ else
 fi
 
 docker-compose -f /deploy/docker-compose.yml down -v
+docker image prune -a -f

@@ -70,6 +70,7 @@ async function expressLoader() {
       secure: false,
       httpOnly: false,
       maxAge: 3 * 24 * 60 * 60 * 1000, // 3 day
+      domain: '.connecthon.com',
       // sameSite: 'none',
     },
     secret: process.env.SESSION_SECRET_KEY!,
