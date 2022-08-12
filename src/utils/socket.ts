@@ -4,6 +4,7 @@ import { Chat, Message } from '@/interfaces/chat';
 import * as ChatService from '@/services/chat';
 import * as SocketService from '@/services/socketSession';
 import { initSocket } from '@/interfaces/socketSession';
+import winston from 'winston';
 
 const useSocket = (server: Server) => {
   const io = new socketIO.Server(server);
@@ -43,7 +44,7 @@ const useSocket = (server: Server) => {
       await SocketService.destroy(socket.id);
     });
   });
-  console.log('socket connected');
+  winston.info('socket connected');
 };
 
 export default useSocket;

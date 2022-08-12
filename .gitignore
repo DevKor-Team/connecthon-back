@@ -5,3 +5,4 @@ dist/
 .env
 *.env
 yarn.lock
+logs/

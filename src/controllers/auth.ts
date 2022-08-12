@@ -2,6 +2,7 @@
 import { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 import * as CONSTS from '@/utils/consts';
+import winston from 'winston';
 
 export const logout = (req: Request, res: Response) => {
   try {
@@ -9,11 +10,11 @@ export const logout = (req: Request, res: Response) => {
       res.status(401).json('NOT LOGGED IN');
     }
     req.logout((err) => {
-      if (err) { return console.log(err); }
+      if (err) { return winston.error(err); }
       res.redirect(CONSTS.LOGIN_SUCCESS_REDIRECT);
     });
   } catch (err) {
-    console.log(err);
+    winston.error(err);
   }
 };
 export const localLogin = [
