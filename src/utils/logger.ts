@@ -33,7 +33,7 @@ function loggerLoader() {
   });
   winston.clear().add(logger);
 
-  if (process.env.SLACK_WEB_HOOK) {
+  if (process.env.SLACK_WEB_HOOK && process.env.NODE_ENV === 'production') {
     const timeStampFormatter = winston.format.timestamp({
       format: 'YYYY-MM-DD HH:mm:ss ZZ',
     });

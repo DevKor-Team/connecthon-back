@@ -15,6 +15,7 @@ import fs from 'fs';
 import socket from '@/utils/socket';
 import loggerLoader from '@/utils/logger';
 import winston from 'winston';
+import { errorHandler } from '@/middlewares/error';
 
 declare module 'express-session' {
   interface SessionData {
@@ -83,9 +84,10 @@ async function expressLoader() {
   passport.deserializeUser(Passport.deserialize);
 
   app.use(router);
-  app.all('*', (_, res) => {
-    res.status(404).json({ error: { message: 'URL Not Found' } });
-  });
+  app.use(errorHandler);
+  // app.all('*', (_, res) => {
+  //   res.status(404).json({ data: null, error: { message: 'URL Not Found' } });
+  // });
 
   return app;
 }
