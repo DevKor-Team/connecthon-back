@@ -219,9 +219,7 @@ export const deserialize = (
       })
       .catch((err) => { console.log(err); });
   } else if (user.type === 'user') {
-    UserService.getByEmail(
-      (user.userData as UserModelType).oauthid,
-    )
+    UserService.get(user.userData.id)
       .then((result) => {
         if (result.data) {
           done(

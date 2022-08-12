@@ -7,7 +7,7 @@ export const logout = (req: Request, res: Response) => {
   try {
     req.logout((err) => {
       if (err) { return console.log(err); }
-      res.redirect('/');
+      res.redirect(CONSTS.LOGIN_SUCCESS_REDIRECT);
     });
   } catch (err) {
     console.log(err);
