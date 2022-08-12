@@ -12,9 +12,9 @@ export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const isAuth = (req: Request, res: Response, next: NextFunction) => {
-  if (req.isAuthenticated() && req.user) {
+  if (req.isAuthenticated()) {
     next();
   } else {
-    res.status(401).json({ reasone: 'NOT AUTHENTICATED' });
+    res.status(401).json({ reason: 'NOT AUTHENTICATED' });
   }
 };
