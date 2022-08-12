@@ -3,24 +3,21 @@ import { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 import * as CONSTS from '@/utils/consts';
 import winston from 'winston';
+import HttpError from '@/interfaces/error';
 
 export const logout = (req: Request, res: Response) => {
-  try {
-    if (!req.isAuthenticated()) {
-      res.status(401).json('NOT LOGGED IN');
-    }
-    req.logout((err) => {
-      if (err) { return winston.error(err); }
-      res.redirect(CONSTS.LOGIN_SUCCESS_REDIRECT);
-    });
-  } catch (err) {
-    winston.error(err);
+  if (!req.isAuthenticated()) {
+    throw new HttpError(401, 'Not Logged In');
   }
+  req.logout((err) => {
+    if (err) { return winston.error(err); }
+    res.redirect(CONSTS.LOGIN_SUCCESS_REDIRECT);
+  });
 };
 export const localLogin = [
   (req: Request, res: Response, next: NextFunction) => {
     if (req.isAuthenticated()) {
-      res.status(403).json({ reason: 'ALREADY LOGIN' });
+      throw new HttpError(403, 'Already Logined');
     } else {
       next();
     }
@@ -31,7 +28,7 @@ export const localLogin = [
 export const googleLogin = [
   (req: Request, res: Response, next: NextFunction) => {
     if (req.isAuthenticated()) {
-      res.status(403).json({ reason: 'ALREADY LOGIN' });
+      throw new HttpError(403, 'Already Logined');
     } else {
       next();
     }
@@ -47,7 +44,7 @@ export const googleLogin = [
 export const kakaoLogin = [
   (req: Request, res: Response, next: NextFunction) => {
     if (req.isAuthenticated()) {
-      res.status(403).json({ reason: 'ALREADY LOGIN' });
+      throw new HttpError(403, 'Already Logined');
     } else {
       next();
     }
@@ -60,7 +57,7 @@ export const kakaoLogin = [
 export const githubLogin = [
   (req: Request, res: Response, next: NextFunction) => {
     if (req.isAuthenticated()) {
-      res.status(403).json({ reason: 'ALREADY LOGIN' });
+      throw new HttpError(403, 'Already Logined');
     } else {
       next();
     }
@@ -76,7 +73,7 @@ export const githubLogin = [
 export const getSessionUser = (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.isAuthenticated()) {
-      throw new Error('Not Logged In');
+      throw new HttpError(401, 'Not Logged In');
     } else {
       res.json({
         type: req.user?.type,
