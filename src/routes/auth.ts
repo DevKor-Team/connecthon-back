@@ -3,12 +3,11 @@ import express from 'express';
 import passport from 'passport';
 import * as AuthController from '@/controllers/auth';
 import * as CONSTS from '@/utils/consts';
-import { isAuth } from '@/utils/auth';
 
 const router = express.Router();
 
-router.get('/logout', isAuth, AuthController.logout);
-router.get('/user', isAuth, AuthController.getSessionUser);
+router.get('/logout', AuthController.logout);
+router.get('/user',  AuthController.getSessionUser);
 router.post('/local', AuthController.localLogin);
 router.get('/google', AuthController.googleLogin);
 router.get('/kakao', AuthController.kakaoLogin);
