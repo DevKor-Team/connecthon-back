@@ -14,6 +14,7 @@ import * as UserService from '@/services/auth/user';
 import {
   User, UserProvider, UserModel as UserModelType,
 } from '@/interfaces/auth';
+import winston from 'winston';
 
 dotenv.config();
 interface oauthResponse {
@@ -27,10 +28,7 @@ export const localStrategy = new LocalStrategy(
   { usernameField: 'username', passwordField: 'password' },
   async (username, password, done: VerifyCallback) => {
     try {
-      console.log(username);
-      console.log(password);
       const result = await AuthService.authenticateCompany(username, password);
-      console.log('authenticateCompany', result);
       if (result.data) {
         return done(
           null,
@@ -217,7 +215,7 @@ export const deserialize = (
           );
         } else done(null);
       })
-      .catch((err) => { console.log(err); });
+      .catch((err) => { winston.error(err); });
   } else if (user.type === 'user') {
     UserService.get(user.userData.id)
       .then((result) => {
@@ -231,6 +229,6 @@ export const deserialize = (
           );
         } else done(null);
       })
-      .catch((err) => { console.log(err); });
+      .catch((err) => { winston.error(err); });
   }
 };
