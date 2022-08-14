@@ -30,6 +30,21 @@ export async function update(
   Promise<ServiceResult<CompanyModelType>> {
   const companyObj = await CompanyModel.findById(id);
   // important! todo: set fields that only admin can change
+
+  const updates: Partial<CompanySignup> = {};
+  // todo - satisfying types... lodash.pick occurs type error
+  if ('profile' in change) {
+    updates.profile = change.profile;
+  }
+  if ('name' in change) {
+    updates.name = change.name;
+  }
+  if (isAdmin) {
+    if ('level' in change) {
+      updates.level = change.level;
+    }
+  }
+
   if (!companyObj) {
     throw Error('Company Not Found');
   }

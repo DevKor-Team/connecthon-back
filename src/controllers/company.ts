@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import * as CompanyService from '@/services/auth/company';
-import { CompanySignup } from '@/interfaces/auth';
+import { CompanySignup, Profile } from '@/interfaces/auth';
 
 export async function get(req: Request<{ id: string }>, res: Response, next: NextFunction) {
   try {
@@ -23,6 +23,19 @@ export async function create(
       password: req.body.data.password,
       level: req.body.data.level,
     });
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function update(
+  req: Request<{ id: string }, Record<string, never>, { profile: Profile }>,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const result = await CompanyService.update(req.params.id, req.body);
     res.json(result);
   } catch (err) {
     next(err);

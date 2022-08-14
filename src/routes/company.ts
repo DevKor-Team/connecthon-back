@@ -8,5 +8,6 @@ const router = express.Router();
 
 router.post('/', isAdmin, Controller.create);
 router.get('/:id', Controller.get);
+router.put('/:id', Controller.update);
 
 export default router;

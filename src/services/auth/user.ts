@@ -69,17 +69,16 @@ export async function update(id: ObjectID | string, change: Partial<UserType>, i
   const userObj = await UserModel.findById(id);
   let updates: Partial<UserType> = {};
   // todo - satisfying types... lodash.pick occurs type error
-  if (!isAdmin) {
-    if ('profile' in change) {
-      updates.profile = change.profile;
-    }
-    if ('email' in change) {
-      updates.email = change.email;
-    }
-    if ('name' in change) {
-      updates.name = change.name;
-    }
-  } else {
+  if ('profile' in change) {
+    updates.profile = change.profile;
+  }
+  if ('email' in change) {
+    updates.email = change.email;
+  }
+  if ('name' in change) {
+    updates.name = change.name;
+  }
+  if (isAdmin) {
     updates = change;
   }
 
