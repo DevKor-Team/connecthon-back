@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as CompanyService from '@/services/auth/company';
 import { CompanySignup, Profile } from '@/interfaces/auth';
+import { ObjectId } from 'bson';
 
 export async function get(req: Request<{ id: string }>, res: Response, next: NextFunction) {
   try {
@@ -31,11 +32,17 @@ export async function create(
 
 export async function update(
   req: Request<{ id: string }, Record<string, never>, { profile: Profile }>,
-  res: Response,
+  res: Response<any, { isAdmin: boolean }>,
   next: NextFunction,
 ) {
   try {
-    const result = await CompanyService.update(req.params.id, req.body);
+    if (!res.locals.isAdmin) {
+      const id = new ObjectId(req.user?.userData.id);
+      if (!id.equals(req.params.id)) {
+        throw new Error('user id is not same');
+      }
+    }
+    const result = await CompanyService.update(req.params.id, req.body, res.locals.isAdmin);
     res.json(result);
   } catch (err) {
     next(err);
