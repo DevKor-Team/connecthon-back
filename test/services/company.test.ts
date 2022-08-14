@@ -63,7 +63,6 @@ describe('company service', () => {
     const res = await companyService.deleteObj(id);
     expect(res?.data?.name).toEqual(mockCompany.name);
     const error = await getError<Error>(async () => companyService.get(id));
-    // console.log(error);
     expect(error).toBeInstanceOf(Error);
   });
 });
