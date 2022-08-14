@@ -22,6 +22,20 @@ export async function get(id: ObjectID | string)
   };
 }
 
+export async function getList()
+  : Promise<ServiceResult<CompanyModelType[]>> {
+  const companyObjs = await CompanyModel.find();
+  const companyList = companyObjs.map((companyObj) => ({
+    id: companyObj._id,
+    name: companyObj.name,
+    profile: companyObj.profile,
+    level: companyObj.level,
+  }));
+  return {
+    data: companyList,
+  };
+}
+
 export async function update(
   id: ObjectID | string,
   change: Partial<CompanySignup>,

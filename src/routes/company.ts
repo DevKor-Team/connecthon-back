@@ -6,8 +6,9 @@ import {
 
 const router = express.Router();
 
+router.get('/', Controller.getList);
 router.post('/', isAdmin, Controller.create);
 router.get('/:id', Controller.get);
-router.put('/:id', checkAdmin, Controller.update);
+router.put('/:id/profile', checkAdmin, Controller.update);
 
 export default router;

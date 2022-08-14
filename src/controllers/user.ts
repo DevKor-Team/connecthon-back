@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as UserService from '@/services/auth/user';
 import { Profile } from '@/interfaces/auth';
+import HttpError from '@/interfaces/error';
 import { ObjectId } from 'bson';
 
 export async function get(req: Request<{ id: string }>, res: Response, next: NextFunction) {
@@ -30,7 +31,7 @@ export async function updateProfile(
     if (!res.locals.isAdmin) {
       const id = new ObjectId(req.user?.userData.id);
       if (!id.equals(req.params.id)) {
-        throw new Error('user id is not same');
+        throw new HttpError(400, 'Id is not same with current user');
       }
     }
     const result = await UserService.update(req.params.id, req.body, res.locals.isAdmin);
