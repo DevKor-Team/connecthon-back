@@ -1,5 +1,5 @@
 import { ObjectID } from 'bson';
-// import lodash from 'lodash';
+import lodash from 'lodash';
 import UserModel from '@/models/user';
 import { UserModel as UserModelType, User as UserType } from '@/interfaces/auth';
 import { ServiceResult } from '@/interfaces/common';
@@ -86,7 +86,8 @@ export async function update(id: ObjectID | string, change: Partial<UserType>, i
   if (!userObj) {
     throw new HttpError(404, 'User Not Found');
   }
-  Object.assign(userObj, updates);
+  lodash.merge(userObj, updates);
+
   const newUserObj = await userObj.save();
   return {
     data: {

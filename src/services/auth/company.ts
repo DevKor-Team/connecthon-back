@@ -1,17 +1,19 @@
 import { ObjectID } from 'bson';
+import lodash from 'lodash';
 import CompanyModel from '@/models/company';
 import { CompanyModel as CompanyModelType, CompanySignup } from '@/interfaces/auth';
 import { ServiceResult } from '@/interfaces/common';
 import { hash } from '@/utils/password';
+import HttpError from '@/interfaces/error';
 
 // read: https://github.com/microsoft/TypeScript/issues/26781
 
 export async function get(id: ObjectID | string)
   : Promise<ServiceResult<CompanyModelType>> {
   const companyObj = await CompanyModel.findById(id);
-  if (!companyObj) {
-    throw Error('Company Not Found');
-  }
+  if (!userObj) {
+     throw new HttpError(404, 'Company Not Found');
+   }
   return {
     data: {
       id: companyObj._id,
@@ -31,9 +33,9 @@ export async function update(
   const companyObj = await CompanyModel.findById(id);
   // important! todo: set fields that only admin can change
   if (!companyObj) {
-    throw Error('Company Not Found');
-  }
-  Object.assign(companyObj, change);
+     throw new HttpError(404, 'Company Not Found');
+   }
+  lodash.merge(companyObj, change);
   const newCompanyObj = await companyObj.save();
   return {
     data: {
@@ -55,10 +57,10 @@ export async function create(company: CompanySignup):
 
   if (existingCompany != null) {
     if (existingCompany.name === company.name) {
-      throw Error('Company with same name exists');
+      throw new HttpError(409, 'Company with same name exists');
     }
     // more filterings
-    throw Error('Same company exists with unknown fields');
+    throw new HttpError(409, 'Same company exists with unknown fields');
   }
   const companyPasswordHashed = {
     ...company,
@@ -79,7 +81,7 @@ export async function deleteObj(id: ObjectID | string):
   Promise<ServiceResult<CompanyModelType>> {
   const companyObj = await CompanyModel.findById(id);
   if (!companyObj) {
-    throw Error('Company Not Found');
+    throw new HttpError(404, 'Company Not Found');
   }
   await companyObj.remove();
   return {
@@ -97,7 +99,7 @@ export async function getByName(name: string):
   const companyObj = await CompanyModel.findOne({ name });
 
   if (!companyObj) {
-    throw Error('Company Not Found');
+    throw new HttpError(404, 'Company Not Found');
   }
   return {
     data: {
