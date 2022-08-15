@@ -1,4 +1,5 @@
 import { ObjectID } from 'bson';
+import lodash from 'lodash';
 import CompanyModel from '@/models/company';
 import { CompanyModel as CompanyModelType, CompanySignup } from '@/interfaces/auth';
 import { ServiceResult } from '@/interfaces/common';
@@ -33,7 +34,7 @@ export async function update(
   if (!companyObj) {
     throw Error('Company Not Found');
   }
-  Object.assign(companyObj, change);
+  lodash.merge(companyObj, change);
   const newCompanyObj = await companyObj.save();
   return {
     data: {

@@ -1,7 +1,9 @@
 import { ObjectID } from 'bson';
-// import lodash from 'lodash';
+import lodash from 'lodash';
 import UserModel from '@/models/user';
-import { UserModel as UserModelType, User as UserType, UserProvider } from '@/interfaces/auth';
+import {
+  UserModel as UserModelType, User as UserType,
+} from '@/interfaces/auth';
 import { ServiceResult } from '@/interfaces/common';
 
 // const USER_CHANGABLE_FIELDS = ['team', 'profile'];
@@ -67,6 +69,9 @@ export async function getList()
 export async function update(id: ObjectID | string, change: Partial<UserType>, isAdmin = false):
   Promise<ServiceResult<UserModelType>> {
   const userObj = await UserModel.findById(id);
+  if (!userObj) {
+    throw Error('User Not Found');
+  }
   let updates: Partial<UserType> = {};
   // todo - satisfying types... lodash.pick occurs type error
   if (!isAdmin) {
@@ -83,10 +88,7 @@ export async function update(id: ObjectID | string, change: Partial<UserType>, i
     updates = change;
   }
 
-  if (!userObj) {
-    throw Error('User Not Found');
-  }
-  Object.assign(userObj, updates);
+  lodash.merge(userObj, updates);
   const newUserObj = await userObj.save();
   return {
     data: {
