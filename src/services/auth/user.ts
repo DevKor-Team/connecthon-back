@@ -10,7 +10,8 @@ import HttpError from '@/interfaces/error';
 
 export async function get(id: ObjectID | string)
   : Promise<ServiceResult<UserModelType>> {
-  const userObj = await UserModel.findById(id);
+  const userObj = await UserModel.findById(id).populate('team');
+
   if (!userObj) {
     throw new HttpError(404, 'User Not Found');
   }
@@ -48,7 +49,7 @@ export async function getByOauthId(oauthid: string)
 
 export async function getList()
   : Promise<ServiceResult<UserModelType[]>> {
-  const userObjs = await UserModel.find();
+  const userObjs = await UserModel.find().populate('team');
   const userList = userObjs.map((userObj) => ({
     id: userObj._id,
     email: userObj.email,
