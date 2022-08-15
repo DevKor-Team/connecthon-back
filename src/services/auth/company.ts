@@ -36,6 +36,9 @@ export async function update(
     throw new HttpError(404, 'Company Not Found');
   }
   lodash.merge(companyObj, change);
+  if (change.profile?.career && companyObj.profile?.career) {
+    companyObj.profile.career = change.profile?.career;
+  }
   const newCompanyObj = await companyObj.save();
   return {
     data: {

@@ -87,6 +87,9 @@ export async function update(id: ObjectID | string, change: Partial<UserType>, i
     throw new HttpError(404, 'User Not Found');
   }
   lodash.merge(userObj, updates);
+  if (change.profile?.career && userObj.profile?.career) {
+    userObj.profile.career = updates.profile?.career;
+  }
 
   const newUserObj = await userObj.save();
   return {
