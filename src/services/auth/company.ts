@@ -24,6 +24,20 @@ export async function get(id: ObjectID | string)
   };
 }
 
+export async function getList()
+  : Promise<ServiceResult<CompanyModelType[]>> {
+  const companyObjs = await CompanyModel.find();
+  const companyList = companyObjs.map((companyObj) => ({
+    id: companyObj._id,
+    name: companyObj.name,
+    profile: companyObj.profile,
+    level: companyObj.level,
+  }));
+  return {
+    data: companyList,
+  };
+}
+
 export async function update(
   id: ObjectID | string,
   change: Partial<CompanySignup>,
@@ -32,6 +46,21 @@ export async function update(
   Promise<ServiceResult<CompanyModelType>> {
   const companyObj = await CompanyModel.findById(id);
   // important! todo: set fields that only admin can change
+
+  const updates: Partial<CompanySignup> = {};
+  // todo - satisfying types... lodash.pick occurs type error
+  if ('profile' in change) {
+    updates.profile = change.profile;
+  }
+  if ('name' in change) {
+    updates.name = change.name;
+  }
+  if (isAdmin) {
+    if ('level' in change) {
+      updates.level = change.level;
+    }
+  }
+
   if (!companyObj) {
     throw new HttpError(404, 'Company Not Found');
   }
