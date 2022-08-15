@@ -71,17 +71,23 @@ export async function addUser(id: ObjectID | string, userId: ObjectID | string):
   if (userObj == null) {
     throw Error('User does not exists');
   }
-  if (!(userObj.team == null)) { // check null or undefined
-    await TeamModel.findByIdAndUpdate(userObj.team, {
-      $pull: {
-        users: { _id: userId },
-      },
-    });
-  }
-  userObj.team = new ObjectID(id);
-  await userObj.save();
 
-  teamObj.users.push(new ObjectID(userId));
+  if (!(new ObjectID(userObj.team).equals(teamObj._id))) {
+    if (!(userObj.team == null)) { // check null or undefined
+      const originTeamObj = await TeamModel.findByIdAndUpdate(userObj.team, {
+        $pull: {
+          users: userId,
+        },
+      });
+      if (originTeamObj) {
+        await originTeamObj.save();
+      }
+    }
+    userObj.team = new ObjectID(id);
+    await userObj.save();
+
+    teamObj.users.push(new ObjectID(userId));
+  }
   const newTeamObj = await teamObj.save();
 
   return {
@@ -126,8 +132,10 @@ export async function update(id: ObjectID | string, change: Partial<TeamType>, i
   if ('description' in change && change.description) {
     updates.description = change.description;
   }
-  if ('name' in change && change.image) {
-    updates.image = change.image;
+  if (isAdmin) {
+    if ('name' in change && change.name) {
+      updates.name = change.name;
+    }
   }
 
   if (!teamObj) {
@@ -152,6 +160,13 @@ export async function deleteObj(id: ObjectID | string):
   if (!teamObj) {
     throw Error('Team Not Found');
   }
+  teamObj.users.forEach(async (userId) => {
+    const userObj = await UserModel.findById(userId);
+    if (userObj) {
+      userObj.team = undefined;
+      await userObj.save();
+    }
+  });
   await teamObj.remove();
   return {
     data: {
