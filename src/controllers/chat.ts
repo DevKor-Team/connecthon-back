@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as ChatService from '@/services/chat';
+import * as UserService from '@/services/auth/user';
+import * as CompanyService from '@/services/auth/company';
 
 export const get = async (
   req: Request<{ id: string }>,
@@ -31,7 +33,27 @@ export const getList = async (
       throw Error('unvalid request');
     }
     const result = await ChatService.getList(req.user.userData.id, req.user.type);
-    res.json(result);
+    if (result.data === undefined || result.data?.length === 0) {
+      res.json({ data: [] });
+    } else {
+      const roomList = await Promise.all(result.data?.map(async (room) => {
+        const user = await UserService.get(room.user);
+        const company = await CompanyService.get(room.company);
+        return {
+          userImg: user.data?.profile?.img,
+          companyImg: company.data?.profile?.img,
+          userName: user.data?.name,
+          companyName: company.data?.name,
+          company: room.company,
+          user: room.user,
+          id: room.id,
+          lastMsg: room.lastMsg,
+          lastSend: room.lastSend,
+        };
+      }));
+
+      res.json({ data: roomList });
+    }
   } catch (err) {
     next(err);
   }
