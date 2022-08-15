@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { ObjectID } from 'bson';
+import { ObjectId, ObjectID } from 'bson';
 import { ADMIN_LEVEL } from '@/utils/consts';
 import { CompanyModel, UserModel } from '@/interfaces/auth';
 
@@ -9,10 +9,10 @@ export function isInTeam(req: Request<{ id: string }>, res: Response, next: Next
   } else if (res.locals.isAdmin) {
     next();
   } else if (req.user.type === 'user') {
-    const teamId = (req.user.userData as UserModel).team;
-    if (teamId == null || ObjectID.isValid(teamId)) {
+    const teamId = new ObjectId((req.user.userData as UserModel).team);
+    if (teamId == null || !ObjectID.isValid(teamId)) {
       throw new Error('User dont have team');
-    } else if (teamId.toString() !== req.params.id) {
+    } else if (!teamId.equals(req.params.id)) {
       throw new Error('Current user is not in team');
     } else {
       next();

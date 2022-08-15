@@ -40,7 +40,7 @@ export async function create(
 
 export async function update(
   req: Request<{ id: string }, Record<string, never>, { data: TeamType }>,
-  res: Response,
+  res: Response<any, { isAdmin: boolean }>,
   next: NextFunction,
 ) {
   try {
@@ -51,6 +51,7 @@ export async function update(
         description: req.body.data.description,
         image: req.body.data.image,
       },
+      res.locals.isAdmin,
     );
     res.json(result);
   } catch (err) {
