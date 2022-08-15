@@ -118,17 +118,16 @@ export async function addUser(id: ObjectID | string, userId: ObjectID | string):
 export async function update(id: ObjectID | string, change: Partial<TeamType>, isAdmin = false):
   Promise<ServiceResult<TeamModelType>> {
   const teamObj = await TeamModel.findById(id);
-  let updates: Partial<TeamType> = {};
+  const updates: Partial<TeamType> = {};
   // todo - satisfying types... lodash.pick occurs type error
-  if (!isAdmin) {
-    if ('image' in change) {
-      updates.image = change.image;
-    }
-    if ('description' in change) {
-      updates.description = change.description;
-    }
-  } else {
-    updates = change;
+  if ('image' in change && change.image) {
+    updates.image = change.image;
+  }
+  if ('description' in change && change.description) {
+    updates.description = change.description;
+  }
+  if ('name' in change && change.image) {
+    updates.image = change.image;
   }
 
   if (!teamObj) {
