@@ -13,6 +13,9 @@ import router from '@/routes';
 import * as Passport from '@/utils/passport';
 import fs from 'fs';
 import socket from '@/utils/socket';
+import loggerLoader from '@/utils/logger';
+import winston from 'winston';
+import { errorHandler } from '@/middlewares/error';
 
 declare module 'express-session' {
   interface SessionData {
@@ -29,7 +32,7 @@ if (process.env.NODE_ENV === 'development') {
       path: '.env',
     });
   } else {
-    console.log('on production mode, set environment variables via other way');
+    winston.info('on production mode, set environment variables via other way');
   }
 }
 
@@ -39,17 +42,10 @@ async function initialize() {
   const mongoHost = process.env.MONGO_HOST;
   if (mongoHost) {
     await mongoose.connect(mongoHost);
+    winston.info('mongoose connected');
   } else {
-    console.error('mongo host not exists');
+    winston.error('mongo host not exists');
   }
-  /*
-  useNewUrlParser, useUnifiedTopology, useFindAndModify, and useCreateIndex
-  are no longer supported options. Mongoose 6 always behaves as if
-  useNewUrlParser, useUnifiedTopology, and useCreateIndex are true,
-  and useFindAndModify is false. Please remove these options from your code.
-  */
-  console.log('mongoose connected');
-  // connect logging module
 }
 
 // create app of express
@@ -70,6 +66,7 @@ async function expressLoader() {
       secure: false,
       httpOnly: false,
       maxAge: 3 * 24 * 60 * 60 * 1000, // 3 day
+      domain: '.connecthon.com',
       // sameSite: 'none',
     },
     secret: process.env.SESSION_SECRET_KEY!,
@@ -88,14 +85,16 @@ async function expressLoader() {
   passport.deserializeUser(Passport.deserialize);
 
   app.use(router);
-  app.all('*', (_, res) => {
-    res.status(404).json({ error: { message: 'URL Not Found' } });
-  });
+  app.use(errorHandler);
+  // app.all('*', (_, res) => {
+  //   res.status(404).json({ data: null, error: { message: 'URL Not Found' } });
+  // });
 
   return app;
 }
 
 async function createServer() {
+  loggerLoader();
   const app = await expressLoader();
   const httpServer = http.createServer(app);
   // maybe, we're attatching socket io server here
@@ -105,15 +104,15 @@ async function createServer() {
   const port = process.env.PORT || 8080;
 
   httpServer.listen(port, () => {
-    console.log(`server listening on port ${port}`); // todo - change console.log to logger
+    winston.info(`server listening on port ${port}`);
   });
   socket(httpServer);
 }
 
 createServer()
   .then(() => {
-    console.log('server created');
+    winston.info('server created');
   })
   .catch((err) => {
-    console.dir(err);
+    winston.error(err);
   });

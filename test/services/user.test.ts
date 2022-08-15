@@ -77,7 +77,6 @@ describe('user service', () => {
     const res = await userService.deleteObj(id);
     expect(res.data).toMatchObject(mockUser);
     const error = await getError<Error>(async () => userService.get(id));
-    // console.log(error);
     expect(error).toBeInstanceOf(Error);
   });
 });

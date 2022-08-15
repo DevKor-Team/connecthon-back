@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 CONTAINER_ID=$(docker container ls -f "name=app" -q)
 
@@ -15,3 +15,4 @@ else
 fi
 
 docker-compose -f /deploy/docker-compose.yml down -v
+docker image prune -a -f

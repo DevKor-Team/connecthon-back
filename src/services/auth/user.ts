@@ -1,11 +1,9 @@
 import { ObjectID } from 'bson';
 import lodash from 'lodash';
 import UserModel from '@/models/user';
-import {
-  UserModel as UserModelType, User as UserType,
-} from '@/interfaces/auth';
+import { UserModel as UserModelType, User as UserType } from '@/interfaces/auth';
 import { ServiceResult } from '@/interfaces/common';
-
+import HttpError from '@/interfaces/error';
 // const USER_CHANGABLE_FIELDS = ['team', 'profile'];
 
 // read: https://github.com/microsoft/TypeScript/issues/26781
@@ -14,7 +12,7 @@ export async function get(id: ObjectID | string)
   : Promise<ServiceResult<UserModelType>> {
   const userObj = await UserModel.findById(id);
   if (!userObj) {
-    throw Error('User Not Found');
+    throw new HttpError(404, 'User Not Found');
   }
   return {
     data: {
@@ -69,9 +67,6 @@ export async function getList()
 export async function update(id: ObjectID | string, change: Partial<UserType>, isAdmin = false):
   Promise<ServiceResult<UserModelType>> {
   const userObj = await UserModel.findById(id);
-  if (!userObj) {
-    throw Error('User Not Found');
-  }
   let updates: Partial<UserType> = {};
   // todo - satisfying types... lodash.pick occurs type error
   if (!isAdmin) {
@@ -88,7 +83,11 @@ export async function update(id: ObjectID | string, change: Partial<UserType>, i
     updates = change;
   }
 
+  if (!userObj) {
+    throw new HttpError(404, 'User Not Found');
+  }
   lodash.merge(userObj, updates);
+
   const newUserObj = await userObj.save();
   return {
     data: {
@@ -114,10 +113,10 @@ export async function create(user: UserType):
 
   if (existingUser != null) {
     if (existingUser.email === user.email && existingUser.provider === user.provider) {
-      throw Error('User with same email exists');
+      throw new HttpError(409, 'User with same email exists');
     }
     // more user filterings
-    throw Error('Same user exists with unknown fields');
+    throw new HttpError(409, 'Same user exists with unknown fields');
   }
   const userObj = await UserModel.create(user);
   return {
@@ -138,7 +137,7 @@ export async function deleteObj(id: ObjectID | string):
   Promise<ServiceResult<UserModelType>> {
   const userObj = await UserModel.findById(id);
   if (!userObj) {
-    throw Error('User Not Found');
+    throw new HttpError(404, 'User Not Found');
   }
   await userObj.remove();
   return {

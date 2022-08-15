@@ -13,7 +13,7 @@ COPY . .
 RUN yarn build
 
 ## remove packages of devDependencies
-# RUN yarn install --production --ignore-scripts --prefer-offline
+RUN yarn install --production --ignore-scripts --prefer-offline
 ## npm prune --production
 
 # ===================================================
