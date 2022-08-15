@@ -5,8 +5,8 @@ import mongo from 'mongoose';
 const schema = new mongo.Schema<Team>({
   name: { required: true, type: String },
   users: [{ type: ObjectID, ref: 'User' }], // two way reference
-  image: { required: true, type: String },
-  description: { required: true, type: String },
+  image: { required: false, type: String },
+  description: { required: false, type: String },
 });
 
 const TeamModel = mongo.model<Team>('Team', schema);

@@ -14,6 +14,6 @@ router.post('/', isAdmin, Controller.create);
 router.get('/:id', Controller.get);
 router.put('/:id/users', isParticipant, Controller.addUser);
 router.put('/:id', checkAdmin, isInTeam, Controller.update);
-router.put('/:id', isAdmin, Controller.deleteTeam);
+router.delete('/:id', isAdmin, Controller.deleteTeam);
 
 export default router;
