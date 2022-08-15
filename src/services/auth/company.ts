@@ -11,9 +11,9 @@ import HttpError from '@/interfaces/error';
 export async function get(id: ObjectID | string)
   : Promise<ServiceResult<CompanyModelType>> {
   const companyObj = await CompanyModel.findById(id);
-  if (!userObj) {
-     throw new HttpError(404, 'Company Not Found');
-   }
+  if (!companyObj) {
+    throw new HttpError(404, 'Company Not Found');
+  }
   return {
     data: {
       id: companyObj._id,
@@ -33,8 +33,8 @@ export async function update(
   const companyObj = await CompanyModel.findById(id);
   // important! todo: set fields that only admin can change
   if (!companyObj) {
-     throw new HttpError(404, 'Company Not Found');
-   }
+    throw new HttpError(404, 'Company Not Found');
+  }
   lodash.merge(companyObj, change);
   const newCompanyObj = await companyObj.save();
   return {
