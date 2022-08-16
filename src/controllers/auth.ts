@@ -22,7 +22,10 @@ export const localLogin = [
       next();
     }
   },
-  passport.authenticate('local', { successRedirect: CONSTS.LOGIN_SUCCESS_REDIRECT, failureRedirect: CONSTS.LOGIN_FAILURE_REDIRECT }),
+  passport.authenticate('local', { failureRedirect: CONSTS.LOGIN_FAILURE_REDIRECT }),
+  (req: Request, res: Response, next: NextFunction) => {
+    res.redirect(CONSTS.LOGIN_SUCCESS_REDIRECT);
+  },
 ];
 
 export const googleLogin = [
