@@ -7,12 +7,7 @@ import { initSocket } from '@/interfaces/socketSession';
 import winston from 'winston';
 
 const useSocket = (server: Server) => {
-  const io = new socketIO.Server(server, {
-    cors: {
-      origin: '*',
-      methods: ['GET', 'POST'],
-    },
-  });
+  const io = new socketIO.Server(server);
 
   io.on('connection', (socket: socketIO.Socket) => {
     socket.on('make session', async (data: initSocket) => {
