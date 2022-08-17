@@ -15,6 +15,8 @@ export const authenticateCompany = async (username: string, password: string): P
   }
   const res = {
     id: company._id,
+    logo: company.logo,
+    alias: company.alias,
     name: company.name,
     profile: company.profile,
     level: company.level,

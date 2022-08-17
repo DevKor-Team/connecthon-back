@@ -30,8 +30,10 @@ export async function create(
   try {
     const result = await CompanyService.create({
       name: req.body.data.name,
+      alias: req.body.data.alias,
       username: req.body.data.username,
       password: req.body.data.password,
+      logo: req.body.data.logo,
       level: req.body.data.level,
     });
     res.json(result);
