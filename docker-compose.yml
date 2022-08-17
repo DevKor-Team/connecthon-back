@@ -1,4 +1,4 @@
-version: "3.2"
+version: "3"
 services:
   app:
     restart: always
@@ -10,9 +10,7 @@ services:
     volumes:
       - node_modules:/app/node_modules
       - logs:/app/logs
-      - type: bind
-        source: ./logs/yarn-error.log
-        target: /app/yarn-error.log
+      - ./yarn-error.log:/app/yarn-error.log:ro
     ports:
       - "80:80"
 
