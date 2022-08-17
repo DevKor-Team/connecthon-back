@@ -14,4 +14,4 @@ echo "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME" >> .env
 echo "DOCKERHUB_IMAGE_NAME=$DOCKERHUB_IMAGE_NAME" >> .env
 
 source .env
-docker-compose -f /deploy/docker-compose.yml pull
+docker-compose --env-file .env -f /deploy/docker-compose.yml pull
