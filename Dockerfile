@@ -31,4 +31,4 @@ COPY --from=builder "/app/package.json" "/app/package.json"
 COPY --from=builder "/app/.env" "/app/.env"
 
 EXPOSE 80
-CMD ["yarn", "start"]
+CMD ["yarn", "start", "--verbose"]
