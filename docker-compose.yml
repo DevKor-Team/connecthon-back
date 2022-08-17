@@ -11,7 +11,7 @@ services:
       - node_modules:/app/node_modules
       - logs:/app/logs
       - type: bind
-        source: logs/yarn-error.log
+        source: ./logs/yarn-error.log
         target: /app/yarn-error.log
     ports:
       - "80:80"
