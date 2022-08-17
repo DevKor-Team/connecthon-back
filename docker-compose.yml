@@ -9,6 +9,10 @@ services:
     container_name: "app"
     volumes:
       - node_modules:/app/node_modules
+      - logs:/app/logs
+      - type: bind
+        source: yarn-error.log
+        target: /app/yarn-error.log
     ports:
       - "80:80"
 
