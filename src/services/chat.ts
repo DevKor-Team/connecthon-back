@@ -5,8 +5,8 @@ import { ServiceResult } from '@/interfaces/common';
 import { userType } from '@/interfaces/auth';
 
 export interface roomWithLastMsg extends Omit<ChatRoomModelType, 'msgs'> {
-  lastMsg: string;
-  lastSend: Date;
+  lastMsg?: string;
+  lastSend?: Date;
 }
 
 export async function getList(id: ObjectID | string, sender: userType)
@@ -24,6 +24,15 @@ export async function getList(id: ObjectID | string, sender: userType)
       const dateB = Date.parse(b.when.toString());
       return dateB - dateA;
     }))[0];
+    if (lastChat === undefined) {
+      return {
+        id: roomObj._id,
+        company: roomObj.company,
+        user: roomObj.user,
+        lastMsg: undefined,
+        lastSend: undefined,
+      };
+    }
     return {
       id: roomObj._id,
       company: roomObj.company,
@@ -34,6 +43,11 @@ export async function getList(id: ObjectID | string, sender: userType)
   });
   return {
     data: roomList.sort((a, b) => {
+      if (a.lastMsg === undefined) {
+        return 1;
+      } if (b.lastMsg === undefined) {
+        return -1;
+      }
       const dateA = Date.parse(a.lastSend.toString());
       const dateB = Date.parse(b.lastSend.toString());
       return dateB - dateA;
