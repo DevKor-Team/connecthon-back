@@ -45,6 +45,16 @@ export async function get(id: ObjectID | string)
   : Promise<ServiceResult<ChatRoomModelType>> {
   const roomObj = await ChatRoomModel.findById(id);
   if (!roomObj) throw Error('uncorrect id');
+  if (roomObj.msgs === [] || roomObj.msgs === undefined) {
+    return {
+      data: {
+        id: roomObj._id,
+        company: roomObj.company,
+        user: roomObj.user,
+        msgs: [],
+      },
+    };
+  }
   return {
     data: {
       id: roomObj._id,
