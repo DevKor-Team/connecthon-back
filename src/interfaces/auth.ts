@@ -35,6 +35,8 @@ export interface User {
 
 // fields can be shown
 export interface Company {
+  alias: string;
+  logo: string;
   name: string;
   profile?: Profile;
   level: number;
