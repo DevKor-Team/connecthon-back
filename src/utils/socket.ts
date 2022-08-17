@@ -9,7 +9,7 @@ import winston from 'winston';
 const useSocket = (server: Server) => {
   const io = new socketIO.Server(server, {
     cors: {
-      origin: ['https://api.connecthon.com', 'http://localhost:3000', '.connecthon.com', 'https://connecthon.com'],
+      origin: '*',
       methods: ['GET', 'POST'],
     },
   });
