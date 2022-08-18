@@ -12,7 +12,7 @@ import passport from 'passport';
 import router from '@/routes';
 import * as Passport from '@/utils/passport';
 import fs from 'fs';
-import socket from '@/utils/socket';
+// import socket from '@/utils/socket';
 import loggerLoader from '@/utils/logger';
 import winston from 'winston';
 import { errorHandler } from '@/middlewares/error';
@@ -106,7 +106,6 @@ async function createServer() {
   httpServer.listen(port, () => {
     winston.info(`server listening on port ${port}`);
   });
-  socket(httpServer);
 }
 
 createServer()
