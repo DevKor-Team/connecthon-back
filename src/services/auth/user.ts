@@ -10,7 +10,8 @@ import HttpError from '@/interfaces/error';
 
 export async function get(id: ObjectID | string)
   : Promise<ServiceResult<UserModelType>> {
-  const userObj = await UserModel.findById(id);
+  const userObj = await UserModel.findById(id).populate('team');
+
   if (!userObj) {
     throw new HttpError(404, 'User Not Found');
   }
@@ -48,7 +49,7 @@ export async function getByOauthId(oauthid: string)
 
 export async function getList()
   : Promise<ServiceResult<UserModelType[]>> {
-  const userObjs = await UserModel.find();
+  const userObjs = await UserModel.find().populate('team');
   const userList = userObjs.map((userObj) => ({
     id: userObj._id,
     email: userObj.email,
@@ -69,17 +70,16 @@ export async function update(id: ObjectID | string, change: Partial<UserType>, i
   const userObj = await UserModel.findById(id);
   let updates: Partial<UserType> = {};
   // todo - satisfying types... lodash.pick occurs type error
-  if (!isAdmin) {
-    if ('profile' in change) {
-      updates.profile = change.profile;
-    }
-    if ('email' in change) {
-      updates.email = change.email;
-    }
-    if ('name' in change) {
-      updates.name = change.name;
-    }
-  } else {
+  if ('profile' in change) {
+    updates.profile = change.profile;
+  }
+  if ('email' in change) {
+    updates.email = change.email;
+  }
+  if ('name' in change) {
+    updates.name = change.name;
+  }
+  if (isAdmin) {
     updates = change;
   }
 

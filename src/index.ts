@@ -8,7 +8,7 @@ import MongoStore from 'connect-mongo';
 import dotenv from 'dotenv';
 import session from 'express-session';
 import passport from 'passport';
-import cors from 'cors';
+
 import router from '@/routes';
 import * as Passport from '@/utils/passport';
 import fs from 'fs';
@@ -54,7 +54,7 @@ async function expressLoader() {
 
   const app = express();
   app.use(helmet());
-  app.use(cors());
+
   // parsers
   app.use(express.json());
   app.use(express.urlencoded({ extended: true, limit: '5mb' }));

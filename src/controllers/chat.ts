@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import * as ChatService from '@/services/chat';
 import * as UserService from '@/services/auth/user';
 import * as CompanyService from '@/services/auth/company';
+import { Chat } from '@/interfaces/chat';
 
 export const get = async (
   req: Request<{ id: string }>,
@@ -68,6 +69,33 @@ export const openNew = async (
 ) => {
   try {
     const result = await ChatService.create(req.body.user, req.body.company);
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const send = async (
+  req: Request<Record<string, never>,
+    Record<string, never>,
+    { room: string, msg: string, sender: 'user' | 'company' }>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (!req.isAuthenticated()) {
+      throw Error('invalid user');
+    }
+    const room = await ChatService.get(req.body.room);
+    if (room === undefined) {
+      throw Error('no room');
+    }
+    const chat: Chat = {
+      sender: req.body.sender,
+      when: new Date(),
+      msg: req.body.msg,
+    };
+    const result = await ChatService.update(chat, req.body.room);
     res.json(result);
   } catch (err) {
     next(err);

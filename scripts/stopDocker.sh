@@ -14,5 +14,5 @@ else
   sudo docker rm ${CONTAINER_ID}
 fi
 
-docker-compose -f /deploy/docker-compose.yml down -v
+docker-compose --env-file .env -f /deploy/docker-compose.yml down -v
 docker image prune -a -f

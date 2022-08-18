@@ -71,17 +71,23 @@ export async function addUser(id: ObjectID | string, userId: ObjectID | string):
   if (userObj == null) {
     throw Error('User does not exists');
   }
-  if (!(userObj.team == null)) { // check null or undefined
-    await TeamModel.findByIdAndUpdate(userObj.team, {
-      $pull: {
-        users: { _id: userId },
-      },
-    });
-  }
-  userObj.team = new ObjectID(id);
-  await userObj.save();
 
-  teamObj.users.push(new ObjectID(userId));
+  if (!(new ObjectID(userObj.team).equals(teamObj._id))) {
+    if (!(userObj.team == null)) { // check null or undefined
+      const originTeamObj = await TeamModel.findByIdAndUpdate(userObj.team, {
+        $pull: {
+          users: userId,
+        },
+      });
+      if (originTeamObj) {
+        await originTeamObj.save();
+      }
+    }
+    userObj.team = new ObjectID(id);
+    await userObj.save();
+
+    teamObj.users.push(new ObjectID(userId));
+  }
   const newTeamObj = await teamObj.save();
 
   return {
@@ -118,17 +124,18 @@ export async function addUser(id: ObjectID | string, userId: ObjectID | string):
 export async function update(id: ObjectID | string, change: Partial<TeamType>, isAdmin = false):
   Promise<ServiceResult<TeamModelType>> {
   const teamObj = await TeamModel.findById(id);
-  let updates: Partial<TeamType> = {};
+  const updates: Partial<TeamType> = {};
   // todo - satisfying types... lodash.pick occurs type error
-  if (!isAdmin) {
-    if ('image' in change) {
-      updates.image = change.image;
+  if ('image' in change && change.image) {
+    updates.image = change.image;
+  }
+  if ('description' in change && change.description) {
+    updates.description = change.description;
+  }
+  if (isAdmin) {
+    if ('name' in change && change.name) {
+      updates.name = change.name;
     }
-    if ('description' in change) {
-      updates.description = change.description;
-    }
-  } else {
-    updates = change;
   }
 
   if (!teamObj) {
@@ -153,6 +160,13 @@ export async function deleteObj(id: ObjectID | string):
   if (!teamObj) {
     throw Error('Team Not Found');
   }
+  teamObj.users.forEach(async (userId) => {
+    const userObj = await UserModel.findById(userId);
+    if (userObj) {
+      userObj.team = undefined;
+      await userObj.save();
+    }
+  });
   await teamObj.remove();
   return {
     data: {
