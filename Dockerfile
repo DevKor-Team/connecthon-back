@@ -17,7 +17,7 @@ RUN yarn install --production --ignore-scripts --prefer-offline
 ## npm prune --production
 
 # ===================================================
-FROM node:16-slim as runtime
+FROM node:16 as runtime
 WORKDIR /app
 
 # ENV NODE_ENV="development"
