@@ -16,6 +16,8 @@ RUN yarn build
 RUN yarn install --production --ignore-scripts --prefer-offline
 ## npm prune --production
 
+RUN yarn cache clean
+
 # ===================================================
 FROM node:16 as runtime
 WORKDIR /app
