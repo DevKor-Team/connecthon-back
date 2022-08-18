@@ -11,13 +11,13 @@ export const get = async (
 ) => {
   try {
     if (!req.isAuthenticated()) {
-      throw Error('unvalid request');
+      throw Error('unauthenticated user');
     }
     const result = await ChatService.get(req.params.id);
     if (req.user?.type === 'user' && result.data?.user !== req.user.userData.id) {
-      throw Error('unvalid request');
+      throw Error('user is not in room');
     } else if (req.user?.type === 'company' && result.data?.company !== req.user.userData.id) {
-      throw Error('unvalid request');
+      throw Error('company is not in room');
     }
     res.json(result);
   } catch (err) {
