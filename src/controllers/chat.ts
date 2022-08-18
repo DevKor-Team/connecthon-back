@@ -42,7 +42,7 @@ export const getList = async (
         const company = await CompanyService.get(room.company);
         return {
           userImg: user.data?.profile?.img,
-          companyImg: company.data?.profile?.img,
+          companyImg: company.data?.logo,
           userName: user.data?.name,
           companyName: company.data?.name,
           company: room.company,
