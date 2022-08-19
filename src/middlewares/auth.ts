@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { ObjectId, ObjectID } from 'bson';
 import { ADMIN_LEVEL } from '@/utils/consts';
 import { CompanyModel, UserModel } from '@/interfaces/auth';
+import { _TeamModel } from '@/interfaces/team';
 
 export function isInTeam(req: Request<{ id: string }>, res: Response, next: NextFunction) {
   if (!req.isAuthenticated()) {
@@ -9,7 +10,10 @@ export function isInTeam(req: Request<{ id: string }>, res: Response, next: Next
   } else if (res.locals.isAdmin) {
     next();
   } else if (req.user.type === 'user') {
-    const teamId = new ObjectId((req.user.userData as UserModel).team);
+    if ((req.user.userData as UserModel).team == null) {
+      throw new Error('User dont have team');
+    }
+    const teamId = new ObjectId(((req.user.userData as UserModel).team as _TeamModel)._id);
     if (teamId == null || !ObjectID.isValid(teamId)) {
       throw new Error('User dont have team');
     } else if (!teamId.equals(req.params.id)) {

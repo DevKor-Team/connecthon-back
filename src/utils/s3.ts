@@ -3,6 +3,7 @@ import { S3 } from 'aws-sdk';
 import multerS3 from 'multer-s3';
 import multer from 'multer';
 import dotenv from 'dotenv';
+import { v1 as uuidV1 } from 'uuid';
 
 dotenv.config();
 const s3 = new S3({
@@ -17,7 +18,8 @@ const upload = multer({
     bucket: process.env.AWS_BUCKET_NAME as string,
     contentType: multerS3.AUTO_CONTENT_TYPE,
     key: (req, file, cb) => {
-      cb(null, new Date().toString());
+      const key = uuidV1();
+      cb(null, key);
     },
     acl: 'private',
   }),
