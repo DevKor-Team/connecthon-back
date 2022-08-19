@@ -1,4 +1,5 @@
 import { ObjectID } from 'bson';
+import { _TeamModel } from '@/interfaces/team';
 
 export interface Profile {
   img?: string;
@@ -26,7 +27,7 @@ export interface User {
     first?: string;
     last?: string;
   };
-  team?: ObjectID;
+  team?: ObjectID | _TeamModel;
   profile?: Profile;
   isAdmin: boolean;
   provider: UserProvider;

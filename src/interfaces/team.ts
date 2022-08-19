@@ -10,3 +10,7 @@ export interface Team {
 export interface TeamModel extends Team {
   id: ObjectID;
 }
+
+export interface _TeamModel extends Team {
+  _id: ObjectID | string;
+}
