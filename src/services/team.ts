@@ -72,7 +72,7 @@ export async function addUser(id: ObjectID | string, userId: ObjectID | string):
     throw Error('User does not exists');
   }
 
-  if (!(new ObjectID(userObj.team).equals(teamObj._id))) {
+  if (!(new ObjectID(userObj.team as ObjectID).equals(teamObj._id))) {
     if (!(userObj.team == null)) { // check null or undefined
       const originTeamObj = await TeamModel.findByIdAndUpdate(userObj.team, {
         $pull: {
