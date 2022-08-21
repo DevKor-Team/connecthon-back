@@ -67,8 +67,9 @@ export async function update(teamId: ObjectID | string, change: Partial<Project>
 
   if (!projectObj) {
     // throw Error('Project Not Found');
-    const result = await create(teamId);
-    return result;
+    return {
+      data: undefined,
+    };
   }
 
   if (change.likes) {

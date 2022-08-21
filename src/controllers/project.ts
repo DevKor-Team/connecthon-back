@@ -53,7 +53,11 @@ export const update = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await ProjectService.update(req.params.id, req.body.change);
+    let result = await ProjectService.update(req.params.id, req.body.change);
+    if (result.data === undefined) {
+      const _ = await ProjectService.create(req.params.id);
+      result = await ProjectService.update(req.params.id, req.body.change);
+    }
     const temp = await TempService.get(req.params.id);
     if (temp.data === undefined) {
       await TempService.create(req.params.id);
